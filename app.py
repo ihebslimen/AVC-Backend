@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
-from routes.user_route import user_bp
-from routes.agricole_route import agricole_bp
-from routes.otp import otp_bp
+from blueprints.admin import admin_bp
+from blueprints.shared import shared_bp
+
+from routes.agricole_route import *
+from routes.otp import *
+from routes.user_route import * 
 from db import mongo
 import os
-
 
 # settings app
 app = Flask(__name__)
@@ -15,9 +17,10 @@ mongo.init_app(app)
 app.secret_key = 'mysecretkey'
 
 # blueprints
-app.register_blueprint(user_bp, url_prefix='/api')
-app.register_blueprint(agricole_bp, url_prefix='/api')
-app.register_blueprint(otp_bp, url_prefix='/api')
+
+app.register_blueprint(admin_bp, url_prefix='/api/admin')
+app.register_blueprint(shared_bp, url_prefix='/api/shared')
+
 
 
 

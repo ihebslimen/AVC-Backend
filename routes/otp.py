@@ -11,13 +11,15 @@ import jwt
 from bson import  json_util
 import json
 from dotenv import load_dotenv
+from blueprints.admin import admin_bp
+from blueprints.shared import shared_bp
+
 
 
 
 load_dotenv()
 
 
-otp_bp = Blueprint('otp', __name__)
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Define OTP parameters
@@ -45,12 +47,12 @@ def verify_otp(otp, secret):
     return totp.verify(otp)
 
 # Authenticate a user and generate an OTP
-@otp_bp.route('/login', methods=['POST'])
+@shared_bp.route('/login', methods=['POST'])
 def login():
     # Authenticate user
     #username = request.form['email']
     data = request.get_json()
-    res = mongo.db.users.find_one({'email': data['email'] })
+    res = mongo.db.users.find_one({'cin': data['cin'] })
     if res is None :
         return 'Wrong Credentials'
     
@@ -70,7 +72,7 @@ def login():
 
 
 # Verify an OTP and return an access token
-@otp_bp.route('/verify_otp', methods=['POST'])
+@shared_bp.route('/verify_otp', methods=['POST'])
 def verify_otp():
     # Verify OTP
     data = request.get_json()

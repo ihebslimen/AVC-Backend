@@ -3,7 +3,6 @@ from twilio.rest import Client
 from random import randint
 import os
 
-otp_bp = Blueprint('otp', __name__)
 
 # Set environment variables for your credentials
 # Read more at http://twil.io/secure
