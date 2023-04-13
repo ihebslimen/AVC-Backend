@@ -8,7 +8,6 @@ import pyotp
 import datetime
 from db import mongo
 import jwt
-from bson import  json_util
 import json
 from dotenv import load_dotenv
 from blueprints.admin import admin_bp
@@ -58,7 +57,7 @@ def login():
         return 'Wrong Credentials'
     
     # Store OTP secret and timestamp in session
-    serialized_user_id = json.loads(json_util.dumps(res['_id']))
+    serialized_user_id = str(res['_id'])
     session['user_id'] = serialized_user_id
     session['phone']=res['phone']
     session['role']=res['role']

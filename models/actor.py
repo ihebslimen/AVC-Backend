@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_pymongo import PyMongo
 from db import mongo
 from flask_pymongo import PyMongo , ObjectId
 

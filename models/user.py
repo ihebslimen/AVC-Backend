@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_pymongo import PyMongo
 from db import mongo
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 
 
-class User(UserMixin):
+class User():
     def __init__(self,_id, cin, name, email, phone, role):
         self._id
         self.cin = cin
