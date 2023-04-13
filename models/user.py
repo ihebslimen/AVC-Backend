@@ -2,37 +2,39 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from db import mongo
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 
-
-class User:
-    def __init__(self,_id, name, email, password):
+class User(UserMixin):
+    def __init__(self,_id, cin, name, email, phone, role):
         self._id
+        self.cin = cin
         self.name = name
         self.email = email
-        self.password = password
+        self.phone = phone
+        self.role = role
 
     @staticmethod
     def get_all_users():
         users = mongo.db.users.find()
         result = []
         for user in users:
-            result.append({'_id': str(user['_id']), 'name': user['name'], 'email': user['email'], 'password': user['password']})
+            result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role'])})
         return result
 
     @staticmethod
     def get_one_user(_id):
         user = mongo.db.users.find_one({'_id': _id})
-        return {'_id': str(user['_id']), 'name': user['name'], 'email': user['email'], 'password': user['password']}
+        return {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role'])}
 
     @staticmethod
-    def create_user(name, email, password):
-        user = {'name': name, 'email': email, 'password': generate_password_hash(password)}
+    def create_user(cin, name, email, phone, role):
+        user = {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role}
         mongo.db.users.insert_one(user)
 
     @staticmethod
-    def update_user(_id, email, name, password):
-        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'email':email, 'name': name, 'password': generate_password_hash(password)}})
+    def update_user(cin, name, email, phone, role):
+        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role}})
 
     @staticmethod
     def delete_user(_id):
