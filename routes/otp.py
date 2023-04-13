@@ -25,7 +25,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # Define OTP parameters
 OTP_LENGTH = 6
 OTP_VALIDITY_TIME = 300  # seconds
-
+# Set the expiration time of the token to 1 hour
+expiration_time = datetime.timedelta(hours=12)
 
 
 # Set environment variables for your credentials
@@ -60,6 +61,7 @@ def login():
     serialized_user_id = json.loads(json_util.dumps(res['_id']))
     session['user_id'] = serialized_user_id
     session['phone']=res['phone']
+    session['role']=res['role']
     session['otp_timestamp'] = datetime.datetime.now().timestamp()
 
     # Send OTP to user (e.g. via SMS or email)
@@ -78,6 +80,7 @@ def verify_otp():
     data = request.get_json()
     user_id = session.get('user_id')
     verified_number = session.get('phone')
+    role = session.get('role')
     otp_timestamp = session.get('otp_timestamp')
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
@@ -93,6 +96,8 @@ def verify_otp():
     print(verification_check.status) 
     
     # Create access token (e.g. using JWT)
-    
-    access_token = jwt.encode({'user_id': user_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, SECRET_KEY)
+    payload = {'user_id': user_id, 'role' : role, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=12)}
+    access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+    #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
     return jsonify({'access_token': access_token})
