@@ -1,0 +1,9 @@
+version: '3'
+services:
+  flaskapp:
+    image: python:3.8
+    build: .
+    container_name: flaskContainer
+    restart: always
+    ports:
+      - "5000:5000"

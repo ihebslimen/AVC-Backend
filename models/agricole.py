@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_pymongo import PyMongo
 from db import mongo
 from models.actor import Actor
 from flask_pymongo import PyMongo , ObjectId
@@ -7,8 +6,8 @@ from flask_pymongo import PyMongo , ObjectId
 
 
 class Agricole(Actor):
-    def __init__(self,_id, privateKey, publicKey, type,localisation):
-        super.__init__(_id, privateKey, publicKey, type)
+    def __init__(self,_id, type,localisation):
+        super.__init__(_id,  type)
         self.localisation = localisation
 
 

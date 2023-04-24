@@ -2,13 +2,11 @@ from flask import Flask, jsonify, request
 from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
 from blueprints.user import user_bp
-from flask_login import LoginManager
-from flask_jwt_extended import JWTManager
-from flask_security import Security
 from routes.agricole_route import *
 from routes.otp import *
 from routes.user_route import * 
 from db import mongo
+from models.actor import Actor
 import os
 
 # settings app
@@ -19,14 +17,18 @@ app.config['MONGO_URI'] = MONGO_URI
 mongo.init_app(app)
 app.secret_key = 'mysecretkey'
 app.config['JWT_SECRET_KEY'] = 'mysecretkey'
-jwt = JWTManager(app)
 # blueprints
 
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(user_bp, url_prefix='/api/admin')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
 
+# tester les instances
+my_actor = Actor("actor")
 
+@app.route('/public-key')
+def get_public_key():
+    return my_actor.getPubKey()
 
 
 

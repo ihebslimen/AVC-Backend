@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo , ObjectId
-from werkzeug.security import generate_password_hash, check_password_hash
 
 # set up Flask app
 app = Flask(__name__)
