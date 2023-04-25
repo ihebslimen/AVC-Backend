@@ -9,9 +9,8 @@ import json
 class Actor:
     nbInstances = 0
 
-    def __init__(self, type):
+    def __init__(self):
         self.public_key = None
-        self.type = type
         Actor.nbInstances +=  1
         self.generate_key_pair()
     
@@ -19,33 +18,25 @@ class Actor:
         public_key_str = str(self.public_key)
         return  {'public key' : public_key_str}
 
+    def signTranx(self):
+
+        return
+
     def generate_key_pair(self):
         # Generate a new private key
-        private_key = keys.PrivateKey(os.urandom(32))
-        
+        private_key = keys.PrivateKey(os.urandom(32)) 
         # Derive the public key from the private key
         public_key = private_key.public_key
-
-        # Convert the private and public keys to hexadecimal format
-       
-
         # Encrypt the private key and save it securely to a file
         key = Fernet.generate_key()
         cipher_suite = Fernet(key)
         cipher_text = cipher_suite.encrypt(private_key.to_bytes())
-
         with open('private_key.txt', 'wb') as f:
             f.write(cipher_text)
-
         # Erase any trace of the private key from the program
         del private_key
-
         self.public_key = public_key
 
-
-    def genKeys(self):
-        
-        return
     def negociate(self):
         return
     def sendTransaction(self):

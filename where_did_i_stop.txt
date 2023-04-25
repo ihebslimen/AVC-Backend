@@ -1,0 +1,1 @@
+user model: ligne 35: insert actor variable collection name: NameError: name 'db' is not defined done

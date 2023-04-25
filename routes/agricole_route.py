@@ -20,7 +20,7 @@ def get_one_agricole(_id):
 @admin_bp.route('/agricoles', methods=['POST'])
 def create_agricole():
     data = request.get_json()
-    Agricole.create_agricole(data['privateKey'], data['publicKey'], data['type'],data['localisation'] )
+    Agricole.create_agricole(data['localisation'] )
     return '', 204
 
 

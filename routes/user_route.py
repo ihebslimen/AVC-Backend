@@ -35,7 +35,7 @@ def get_one_user(_id):
 @admin_bp.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json()
-    User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'])
+    User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['actorInfoJson'])
     return '', 204
 
 

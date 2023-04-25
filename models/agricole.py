@@ -25,7 +25,7 @@ class Agricole(Actor):
         return {'_id': str(agricole['_id']), 'privateKey': agricole['privateKey'], 'publicKey' : agricole['publicKey'], 'type' : agricole['type'], 'localisation' : agricole['localisation']}
 
     @staticmethod
-    def create_agricole( privateKey, publicKey, type,localisation):
+    def create_agricole( localisation):
         agricole = { 'privateKey':privateKey, 'publicKey':publicKey, 'type' :type,'localisation' : localisation}
         mongo.db.agricole.insert_one(agricole)
 

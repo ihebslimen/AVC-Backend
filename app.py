@@ -23,14 +23,14 @@ app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(user_bp, url_prefix='/api/admin')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
 
-# tester les instances
+""" # tester les instances
 my_actor = Actor("actor")
 
 @app.route('/public-key')
 def get_public_key():
     return my_actor.getPubKey()
 
-
+ """
 
 # Run Server
 if __name__ == '__main__':
