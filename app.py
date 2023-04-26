@@ -5,6 +5,7 @@ from blueprints.user import user_bp
 from routes.agricole_route import *
 from routes.otp import *
 from routes.user_route import * 
+from routes.offer_route import * 
 from db import mongo
 from models.actor import Actor
 import os
@@ -20,8 +21,12 @@ app.config['JWT_SECRET_KEY'] = 'mysecretkey'
 # blueprints
 
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
-app.register_blueprint(user_bp, url_prefix='/api/admin')
+app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
+
+@app.route('/hello', methods=['GET'])
+def hello():
+    return 'hello world'
 
 """ # tester les instances
 my_actor = Actor("actor")
