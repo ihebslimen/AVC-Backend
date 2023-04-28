@@ -95,7 +95,7 @@ def verify_otp():
     print(verification_check.status) 
     
     # Create access token (e.g. using JWT)
-    payload = {'user_id': user_id, 'role' : role, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=12)}
+    payload = {'user_id': user_id, 'role' : role, 'exp': datetime.datetime(9999, 12, 31)}
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
     #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
