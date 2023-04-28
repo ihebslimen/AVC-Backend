@@ -1,0 +1,24 @@
+#api structure:
+
+localhost:500/api/
+
+                shared/login
+                shared/verify_otp
+                login/  ====> + crud users et acteur (description dans le fichier 'routes')
+                user/   ====> + les fonctions des utilisateurs 
+
+
+
+
+
+
+
+
+
+
+
+
+# admin:
+"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjQyYmEyMzA0ZWE5OWIwMjIyMjdmMTBlIiwicm9sZSI6ImFkbWluIiwiZXhwIjoyNTM0MDIyMTQ0MDB9.17tI_G0dL2LVdfEcY2m4DyvNd6_mV-d0YcJ7AWApPto"
+
+# user:
