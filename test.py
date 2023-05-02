@@ -1,14 +1,19 @@
-from flask import Flask, jsonify
-from web3 import Web3, HTTPProvider
+""" from flask import Flask, jsonify
+from web3 import Web3, WebsocketProvider
 import json
 
 app = Flask(__name__)
 
 # create a web3 instance
-web3 = Web3(HTTPProvider('127.0.0.1:8545'))
+web3 = Web3(WebsocketProvider('http://localhost:8545'))
 
 # define a route to send a specific transaction on the contract
-@app.route('/send_transaction/<contract_name>/<function_name>/<arguments>', methods=['GET'])
+@app.route('/', methods=['GET'])
+def hello():
+    return 'hello world'
+
+
+@app.route('/send_transaction/<contract_name>/<function_name>', methods=['GET'])
 def send_transaction(function_name, arguments):
     
     # get the contract address from the blockchain by its name
@@ -44,3 +49,21 @@ def send_transaction(function_name, arguments):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+ """
+
+
+from web3 import Web3
+from web3 import contract, WebsocketProvider
+
+# Connect to the blockchain network
+web3 = Web3(WebsocketProvider('ws://localhost:8545'))
+
+# Load all contract artifacts from the blockchain
+all_contracts = []
+for address in web3.eth.accounts:
+    print(web3.eth.contract(address=address).all_functions())
+
+# Print the details of all contracts
+for contract in all_contracts:
+    print(contract)
