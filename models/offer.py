@@ -4,6 +4,7 @@ from models.actor import Actor
 from flask_pymongo import PyMongo , ObjectId
 
 
+
 class Offer(Actor):
     def __init__(self, quantity, quality, priceUnit, unit, state, actorType, actorRef):
         super.__init__(_id,  type)
@@ -33,7 +34,7 @@ class Offer(Actor):
 
     @staticmethod
     def get_one_offer(_id):
-        offer = mongo.db.offer.find_one({'_id': _id})
+        offer = mongo.db.offer.find_one({'_id':ObjectId(_id)})
         return {'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])}
 
     @staticmethod

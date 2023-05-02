@@ -11,7 +11,7 @@ def get_all_agricoles():
     return jsonify({'agricoles': agricoles})
 
 
-@admin_bp.route('/users/<string:_id>', methods=['GET'])
+@admin_bp.route('/agricoles/<string:_id>', methods=['GET'])
 def get_one_agricole(_id):
     agricole = Agricole.get_one_agricole(_id)
     return jsonify(agricole)

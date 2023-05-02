@@ -24,7 +24,7 @@ class User():
 
     @staticmethod
     def get_one_user(_id):
-        user = mongo.db.users.find_one({'_id': _id})
+        user = mongo.db.users.find_one({'_id': ObjectId(_id)})
         return {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role'])}
 
     @staticmethod
