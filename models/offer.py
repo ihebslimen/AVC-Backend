@@ -34,7 +34,7 @@ class Offer(Actor):
 
     @staticmethod
     def get_one_offer(_id):
-        offer = mongo.db.offer.find_one({'_id': _id})
+        offer = mongo.db.offer.find_one({'_id':ObjectId(_id)})
         return {'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])}
 
     @staticmethod
