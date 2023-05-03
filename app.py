@@ -13,7 +13,6 @@ from flask_cors import CORS
 
 # settings app
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
 CORS(admin_bp, resources={r"/*": {"origins": "*"}})
 CORS(shared_bp, resources={r"/*": {"origins": "*"}})
 CORS(user_bp, resources={r"/*": {"origins": "*"}})
@@ -42,9 +41,6 @@ def get_public_key():
     return my_actor.getPubKey()
 
  """
-
-CORS(app, resources={r"/*": {"origins": "*"}})
-
 # Run Server
 if __name__ == '__main__':
     app.run(debug=DEBUG)
