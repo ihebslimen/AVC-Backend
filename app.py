@@ -13,7 +13,6 @@ from flask_cors import CORS
 
 # settings app
 app = Flask(__name__)
-CORS(app)
 CORS(admin_bp)
 CORS(shared_bp)
 CORS(user_bp)
@@ -41,6 +40,8 @@ def get_public_key():
     return my_actor.getPubKey()
 
  """
+
+CORS(app)
 
 # Run Server
 if __name__ == '__main__':
