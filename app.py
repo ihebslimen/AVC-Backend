@@ -9,9 +9,14 @@ from routes.offer_route  import *
 from db import mongo
 from models.actor import Actor
 import os
+from flask_cors import CORS
 
 # settings app
 app = Flask(__name__)
+CORS(app)
+CORS(admin_bp)
+CORS(shared_bp)
+CORS(user_bp)
 DEBUG = os.environ.get('DEBUG')
 MONGO_URI = os.environ.get('MONGO_URI')
 app.config['MONGO_URI'] = MONGO_URI
