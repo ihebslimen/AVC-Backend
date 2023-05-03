@@ -13,9 +13,7 @@ from flask_cors import CORS
 
 # settings app
 app = Flask(__name__)
-CORS(admin_bp)
-CORS(shared_bp)
-CORS(user_bp)
+CORS(app, resources={r"/*": {"origins": "*"}})
 DEBUG = os.environ.get('DEBUG')
 MONGO_URI = os.environ.get('MONGO_URI')
 app.config['MONGO_URI'] = MONGO_URI
@@ -41,7 +39,6 @@ def get_public_key():
 
  """
 
-CORS(app)
 
 # Run Server
 if __name__ == '__main__':
