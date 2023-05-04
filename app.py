@@ -11,12 +11,13 @@ from models.actor import Actor
 import os
 from flask_cors import CORS
 
+
 # settings app
 app = Flask(__name__)
-CORS(admin_bp, resources={r"/*": {"origins": "*"}})
-CORS(shared_bp, resources={r"/*": {"origins": "*"}})
-CORS(user_bp, resources={r"/*": {"origins": "*"}})
-
+CORS(admin_bp)
+CORS(shared_bp)
+CORS(user_bp)
+CORS(app)
 DEBUG = os.environ.get('DEBUG')
 MONGO_URI = os.environ.get('MONGO_URI')
 app.config['MONGO_URI'] = MONGO_URI
@@ -28,6 +29,8 @@ app.config['JWT_SECRET_KEY'] = 'mysecretkey'
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
+
+CORS(app, resources={r"/*": {"origins": "*"}},  supports_credentials=True)
 
 @app.route('/hello', methods=['GET'])
 def hello():
@@ -41,6 +44,8 @@ def get_public_key():
     return my_actor.getPubKey()
 
  """
+
+
 # Run Server
 if __name__ == '__main__':
     app.run(debug=DEBUG)

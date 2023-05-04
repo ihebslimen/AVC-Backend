@@ -2,17 +2,21 @@
 from flask import Blueprint, jsonify, request
 from models.user import User
 from blueprints.admin import admin_bp
-
+from flask_cors import CORS , cross_origin
 import jwt
 import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+@admin_bp.route('/hello', methods=['GET'])
+def hello():
+    return 'hello world from admin'
+
 @admin_bp.route('/users', methods=['GET'])
 def get_all_users():
     users = User.get_all_users()
-
-    return jsonify({'users': users})
+    response = jsonify(users)
+    return response
 
 @admin_bp.route('/decode_jwt', methods=['GET'])
 def decode_jwt():

@@ -1,8 +1,10 @@
 
 from flask import Blueprint
+from flask_cors import CORS
 
 
 user_bp = Blueprint('user', __name__)
+
 @user_bp.route('/', methods=['GET'])
 def hello():
     return 'hello user'
