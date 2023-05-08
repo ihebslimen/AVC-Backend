@@ -11,8 +11,8 @@ def get_all_offers():
     offers = Offer.get_all_offers()
     return jsonify({'offers': offers})
     
-@user_bp.route('/offers/filter/<string:actorRef>', methods=['GET'])
-def get_all_offers_by_actor(actorRef):
+@user_bp.route('/offers/filter/<string:key>/<string:value>', methods=['GET'])
+def filter_offers(key, value):
     offers = Offer.get_all_offers_by_actor(actorRef)
     return jsonify(offers)
 

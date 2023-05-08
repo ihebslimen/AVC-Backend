@@ -25,13 +25,16 @@ class Offer(Actor):
             result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
     @staticmethod
-    def get_all_offers_by_actor(actorRef):
-        offers = mongo.db.offer.find({'actorRef' : ObjectId(actorRef)})
+    def filter_offers(key, value):
+        if key == '_id':
+            value = ObjectId(value)
+        offers = mongo.db.offer.find({key : value})
         result = []
         for offer in offers:
             result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
 
+    
     @staticmethod
     def get_one_offer(_id):
         offer = mongo.db.offer.find_one({'_id':ObjectId(_id)})
