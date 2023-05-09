@@ -18,6 +18,13 @@ def get_all_users():
     response = jsonify(users)
     return response
 
+@admin_bp.route('/filter_users', methods=['POST'])
+def filter_users():
+    data = request.get_json()
+    users = User.filter_users(data)
+    response = jsonify(users)
+    return response
+
 @admin_bp.route('/decode_jwt', methods=['GET'])
 def decode_jwt():
     auth_header = request.headers.get('Authorization')
@@ -46,7 +53,7 @@ def create_user():
 @admin_bp.route('/users/<string:_id>', methods=['PUT'])
 def update_user(_id):
     data = request.get_json()
-    User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'])
+    User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'])
     return '', 204
 
 
