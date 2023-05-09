@@ -4,7 +4,7 @@ from db import mongo
 
 
 class User():
-    def __init__(self,_id, cin, name, email, phone, role, type, actor_id):
+    def __init__(self,_id, cin, name, email, phone, role, type,state, actor_id):
         self._id
         self.cin = cin
         self.name = name
@@ -12,6 +12,7 @@ class User():
         self.phone = phone
         self.role = role
         self.type = type
+        self.state= state
         self.actor_id = actor_id
 
     @staticmethod
@@ -19,14 +20,21 @@ class User():
         users = mongo.db.users.find()
         result = []
         for user in users:
-            result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role'])})
+            result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user[type]})
         return result
 
     @staticmethod
     def get_one_user(_id):
         user = mongo.db.users.find_one({'_id': ObjectId(_id)})
-        return {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role'])}
+        return {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user[type]}
 
+    @staticmethod
+    def filter_users(key, value):
+        users = mongo.db.users.find({key:value})
+        result = []
+        for user in users:
+            result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user[type]})
+        return result
     @staticmethod
     def create_user(cin, name, email, phone, role, type, actorInfoJson):
         if role == 'admin':
@@ -38,8 +46,8 @@ class User():
 
 
     @staticmethod
-    def update_user(cin, name, email, phone, role, type, actorInfoJson):
-        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type, 'actor_id': ObjectId(actor_id) }})
+    def update_user(_id , cin, name, email, phone, role, type):
+        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type}})
 
     @staticmethod
     def delete_user(_id):
