@@ -46,8 +46,8 @@ class User():
 
 
     @staticmethod
-    def update_user(_id , cin, name, email, phone, role, type):
-        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type}})
+    def update_user(_id , cin, name, email, phone, role, type, state):
+        mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type, 'state' : state}})
 
     @staticmethod
     def delete_user(_id):
