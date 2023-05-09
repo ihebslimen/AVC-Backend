@@ -53,7 +53,7 @@ def create_user():
 @admin_bp.route('/users/<string:_id>', methods=['PUT'])
 def update_user(_id):
     data = request.get_json()
-    User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'])
+    User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'],data['state'])
     return '', 204
 
 
