@@ -22,7 +22,7 @@ def filter_offers():
 
 @user_bp.route('/offers/<string:_id>', methods=['GET'])
 def get_one_offer(_id):
-    offers = Offer.get_all_offers_by_actor(_id)
+    offers = Offer.get_one_offer(_id)
     return jsonify(offers)
 
 
