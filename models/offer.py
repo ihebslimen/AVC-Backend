@@ -22,7 +22,7 @@ class Offer(Actor):
         offers = mongo.db.offer.find()
         result = []
         for offer in offers:
-            result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
+            result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'],'state' : offer['state'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
     @staticmethod
     def filter_offers(query):
@@ -31,18 +31,18 @@ class Offer(Actor):
         offers = mongo.db.offer.find(query)
         result = []
         for offer in offers:
-            result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
+            result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'state' : offer['state'],'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
 
     
     @staticmethod
     def get_one_offer(_id):
         offer = mongo.db.offer.find_one({'_id':ObjectId(_id)})
-        return {'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])}
+        return {'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'state' : offer['state'],'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])}
 
     @staticmethod
     def create_offer(  quantity, quality, priceUnit, unit, state, actorType, actorRef):
-        offer = {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit, 'actorType' : actorType, 'actorRef' :ObjectId(actorRef)}
+        offer = {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : offer['state'], 'actorType' : actorType, 'actorRef' :ObjectId(actorRef)}
         mongo.db.offer.insert_one(offer)
 
     @staticmethod
