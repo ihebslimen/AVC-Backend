@@ -7,32 +7,30 @@ import os
 import json
 
 class Transaction:
-    def __init__(self, chainId, data, accountAddr, contractAddr, abi):
+    def __init__(self,nonce, gasPrice, gasLimit, chainId, data, toAddress, fromAddress,value):
+        self.nonce = nonce
+        self.gasPrice = gasPrice
+        self.gasLimit = gasLimit
         self.chainId = chainId
+        self.toAddress = toAddress
+        self.fromAddress = fromAddress
         self.data = data
-        self.accountAdd = accountAddr
-        self.contractAddr = contractAddr
-        self.abi = abi
+        self.value= value
 
-    def createTx(self, function_name, function_args):
+    def createTx( nonce, fromAddress, gasPrice,gasLimit, chain_id, value):
 
-        contract = w3.eth.contract(address=self.contractAddr, abi=self.abi)
-
-        # get the function object from the contract instance
-        function = contract.functions[function_name](*function_args)
-
-        # encode the function call data
-        tx_data = function.encodeABI()
-        
-        tx=  {
-            "chainId": self.chainId,
-            "data": tx_data,
-            "from": self.accountAdd,
-            "to": self.contractAddr
+        tx= {
+        "nonce": nonce,
+        "from": fromAddress,
+        "value": value,
+        "chainId": int(chain_id),
+        "gas": int(gasLimit),
+        "gasPrice": int(gasPrice)
         }
 
+        
 
-
+        return tx
 
     def signTx(self,tx):
         signedTx = tx
