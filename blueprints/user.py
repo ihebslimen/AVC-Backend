@@ -5,14 +5,10 @@ from flask_cors import CORS
 
 user_bp = Blueprint('user', __name__)
 
-<<<<<<< HEAD
 """ @user_bp.route('/', methods=['GET'])
 def hello():
     return 'hello user'
 @user_bp.before_request
-=======
-""" @user_bp.before_request
->>>>>>> blockchainTx
 def permissions_check():
     auth_header = request.headers.get('Authorization')
     if not auth_header:

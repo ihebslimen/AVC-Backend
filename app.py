@@ -5,12 +5,8 @@ from blueprints.user import user_bp
 from routes.agricole_route import *
 from routes.otp import *
 from routes.user_route import * 
-<<<<<<< HEAD
-from routes.offer_route  import * 
-=======
 from routes.offer_route import * 
 from routes.transaction_route import *
->>>>>>> blockchainTx
 from db import mongo
 from models.actor import Actor
 import os
@@ -35,14 +31,11 @@ app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
 
-<<<<<<< HEAD
 CORS(app, resources={r"/*": {"origins": "*"}},  supports_credentials=True)
 
 @app.route('/hello', methods=['GET'])
 def hello():
     return 'hello world'
-=======
->>>>>>> blockchainTx
 
 
 
