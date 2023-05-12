@@ -37,8 +37,7 @@ class Actor:
         del private_key
         self.public_key = public_key
 
-    def negociate(self):
-        return
+    
     def sendTransaction(self):
         return
     def receiveTransaction(self):
