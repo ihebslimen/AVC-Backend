@@ -24,6 +24,7 @@ class Offer(Actor):
         for offer in offers:
             result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'],'state' : offer['state'], 'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
+        
     @staticmethod
     def filter_offers(query):
         if '_id' in query:
@@ -42,13 +43,15 @@ class Offer(Actor):
 
     @staticmethod
     def create_offer(  quantity, quality, priceUnit, unit, state, actorType, actorRef):
-        offer = {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : offer['state'], 'actorType' : actorType, 'actorRef' :ObjectId(actorRef)}
-        mongo.db.offer.insert_one(offer)
+        offer = {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : state, 'actorType' : actorType, 'actorRef' :ObjectId(actorRef)}
+        res = mongo.db.offer.insert_one(offer)
+        return res.acknowledged
 
     @staticmethod
     def update_offer(_id, quantity, quality, priceUnit, unit, state, actorType, actorRef):
-        mongo.db.offer.update_one({'_id': ObjectId(_id)}, {'$set': {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : state, 'actorType' : actorType, 'actorRef' : actorRef}})
-
+        res = mongo.db.offer.update_one({'_id': ObjectId(_id)}, {'$set': {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : state, 'actorType' : actorType, 'actorRef' : actorRef}})
+        return res.acknowledged
     @staticmethod
     def delete_offer(_id):
-        mongo.db.offer.delete_one({'_id':ObjectId(_id)})
+        res = mongo.db.offer.delete_one({'_id':ObjectId(_id)})
+        return res.deleted_count

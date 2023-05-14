@@ -8,56 +8,81 @@ import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-@admin_bp.route('/hello', methods=['GET'])
-def hello():
-    return 'hello world from admin'
 
 @admin_bp.route('/users', methods=['GET'])
 def get_all_users():
     users = User.get_all_users()
-    response = jsonify(users)
-    return response
+    if users :
+        res = jsonify({"message" : 'Get request succeeded'  , 'data': users})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get all users'})
+        res.status_code = 404
+    return res
 
 @admin_bp.route('/filter_users', methods=['POST'])
 def filter_users():
     data = request.get_json()
     users = User.filter_users(data)
-    response = jsonify(users)
-    return response
+    if users :
+        res = jsonify({"message" : 'Get request succeeded'  , 'data': users})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get all users'})
+        res.status_code = 404
+    return res
 
-@admin_bp.route('/decode_jwt', methods=['GET'])
-def decode_jwt():
-    auth_header = request.headers.get('Authorization')
-    if auth_header is None:
-        return {'error': 'Authorization header is missing'}, 401
-    try:
-        jwt_token = auth_header.split(' ')[1]
-        decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
-        return {'decoded_token': decoded_token}, 200
-    except jwt.exceptions.InvalidTokenError:
-        return {'error': 'Invalid JWT token'}, 401
+
 
 @admin_bp.route('/users/<string:_id>', methods=['GET'])
 def get_one_user(_id):
     user = User.get_one_user(_id)
-    return jsonify(user)
+    if user :
+        res = jsonify({"message" : 'Get request succeeded' ,'data': user})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get user'})
+        res.status_code = 404
+    return res
 
 
 @admin_bp.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json()
-    User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['actorInfoJson'])
-    return '', 204
+    
+    if data['role'] == 'admin':
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'])
+    else :
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['actorInfoJson'])
+    if result :
+        res = jsonify({'message': 'user created'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get user'})
+        res.status_code = 404
+    return res
 
 
 @admin_bp.route('/users/<string:_id>', methods=['PUT'])
 def update_user(_id):
     data = request.get_json()
-    User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'],data['state'])
-    return '', 204
+    result = User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'],data['state'])
+    if result :
+        res = jsonify({'message': 'user updated'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to update user'})
+        res.status_code = 404
+    return res
 
 
 @admin_bp.route('/users/<string:_id>', methods=['DELETE'])
 def delete_user(_id):
-    User.delete_user(_id)
-    return '', 204
+    result = User.delete_user(_id)
+    if result > 0:
+        res = jsonify({'message': 'user deleted'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to delete user'})
+        res.status_code = 404
+    return res

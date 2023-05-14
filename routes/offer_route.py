@@ -9,7 +9,13 @@ from blueprints.user import user_bp
 @user_bp.route('/offers', methods=['GET'])
 def get_all_offers():
     offers = Offer.get_all_offers()
-    return jsonify({'offers': offers})
+    if offers :
+        res = jsonify({"message" : 'Get request succeeded'  , 'data': offers})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get all offers'})
+        res.status_code = 404
+    return res
     
 
 
@@ -17,31 +23,60 @@ def get_all_offers():
 def filter_offers():
     data = request.get_json()
     offers = Offer.filter_offers(data)
-    response = jsonify(offers)
-    return response
+    if offers :
+        res = jsonify({"message" : 'Get request succeeded'  , 'data': offers})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get all offers'})
+        res.status_code = 404
+    return res
 
 @user_bp.route('/offers/<string:_id>', methods=['GET'])
 def get_one_offer(_id):
-    offers = Offer.get_one_offer(_id)
-    return jsonify(offers)
+    offer = Offer.get_one_offer(_id)
+    if offer :
+        res = jsonify({"message" : 'Get request succeeded' ,'data': offer})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get offer'})
+        res.status_code = 404
+    return res
 
 
 @user_bp.route('/offers', methods=['POST'])
 def create_offer():
     data = request.get_json()
     print(data)
-    Offer.create_offer(data['quantity'], data['quality'], data['priceUnit'], data['unit'], data['state'], data['actorType'], data['actorRef'] )
-    return '', 204
+    result = Offer.create_offer(data['quantity'], data['quality'], data['priceUnit'], data['unit'], data['state'], data['actorType'], data['actorRef'] )
+    if result :
+        res = jsonify({'message': 'offer created'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get offer'})
+        res.status_code = 404
+    return res
 
 
 @user_bp.route('/offers/<string:_id>', methods=['PUT'])
 def update_offer(_id):
     data = request.get_json()
-    Offer.update_offer(_id, data['quantity'], data['quality'], data['priceUnit'], data['unit'],data['state'], data['actorType'], data['actorRef'])
-    return '', 204
+    result = Offer.update_offer(_id, data['quantity'], data['quality'], data['priceUnit'], data['unit'],data['state'], data['actorType'], data['actorRef'])
+    if result :
+        res = jsonify({'message': 'offer updated'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to update offer'})
+        res.status_code = 404
+    return res
 
 
 @user_bp.route('/offers/<string:_id>', methods=['DELETE'])
 def delete_offer(_id):
-    Offer.delete_offer(_id)
-    return '', 204
+    result = Offer.delete_offer(_id)
+    if result > 0:
+        res = jsonify({'message': 'offer deleted'})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to delete offer'})
+        res.status_code = 404
+    return res

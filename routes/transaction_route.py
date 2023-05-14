@@ -77,14 +77,14 @@ def send_transaction():
         receipt = web3.eth.wait_for_transaction_receipt(result)
         status = receipt['status']
         if status == 1 :
-            response = jsonify({'message': 'Transaction succeeded'})
-            response.status_code = 200
+            res = jsonify({'message': 'Transaction succeeded'})
+            res.status_code = 200
             
         else:
-            response = jsonify({'message': 'Transaction failed'})
-            response.status_code = 400
+            res = jsonify({'message': 'Transaction failed'})
+            res.status_code = 404
 
-        return response
+        return res
 
     except Exception as e:
         return(f"Unexpected error: {str(e)}")

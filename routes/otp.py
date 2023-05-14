@@ -69,7 +69,10 @@ def login():
       .create(to=res['phone'], channel="sms")
 
     print(verification.status)
-    return 'OTP generated successfully'
+    res.status_code = 401
+    res = jsonify({"message" : verification.status})
+    res.status_code = 200
+    return res
 
 
 # Verify an OTP and return an access token
@@ -83,11 +86,15 @@ def verify_otp():
     otp_timestamp = session.get('otp_timestamp')
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
-        return 'Invalid session', 401
+        res = jsonify({"message" :'Invalid session' })
+        res.status_code = 401
+        return res
 
     # Check OTP validity
     if datetime.datetime.now().timestamp() - otp_timestamp > OTP_VALIDITY_TIME:
-        return 'OTP has expired', 401
+        res = jsonify({"message" :'OTP has expired' })
+        res.status_code = 401
+        return res
 
     verification_check = client.verify.v2.services(verify_sid) \
         .verification_checks \
@@ -97,6 +104,7 @@ def verify_otp():
     # Create access token (e.g. using JWT)
     payload = {'user_id': user_id, 'role' : role, 'exp': datetime.datetime(9999, 12, 31)}
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
+    res = jsonify({"message" :verification_check.status , "data": access_token })
+    res.status_code = 200
     #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
-    return jsonify({'access_token': access_token})
+    return res
