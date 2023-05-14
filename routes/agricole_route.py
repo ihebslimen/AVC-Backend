@@ -29,6 +29,18 @@ def get_one_agricole(_id):
     return res
 
 
+@user_bp.route('/filter_agricole', methods=['POST'])
+def filter_agricole():
+    data = request.get_json()
+    agricole = Offer.filter_agricole(data)
+    if agricole :
+        res = jsonify({"message" : 'Get request succeeded'  , 'data': agricole})
+        res.status_code = 200
+    else:
+        res = jsonify({'message': 'Unable to get all agricole'})
+        res.status_code = 404
+    return res
+
 @admin_bp.route('/agricoles', methods=['POST'])
 def create_agricole():
     data = request.get_json()

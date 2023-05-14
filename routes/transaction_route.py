@@ -33,9 +33,6 @@ for filename in os.listdir(folder_path):
                 contracts[contract_json['contractName']]['address'] = contract_json['networks']['1337']['address']
 
 
-@user_bp.route('/', methods=['GET'])
-def hello():
-    return 'hello user from tx'
 
 
 @user_bp.route('/send_transaction', methods=['POST'])

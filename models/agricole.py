@@ -25,6 +25,16 @@ class Agricole(Actor):
         return {'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : agricole['user_ref']}
 
     @staticmethod
+    def filter_agricole(query):
+        if '_id' in query:
+            query['_id'] = ObjectId(query[value])
+        agricoles = mongo.db.agricole.find(query)
+        result = []
+        for agricole in agricoles:
+            result.append({'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : agricole['user_ref']})
+        return result
+        
+    @staticmethod
     def create_agricole( localisation):
         agricole = {'localisation' : localisation}
         res = mongo.db.agricole.insert_one(agricole)
