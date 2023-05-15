@@ -16,13 +16,13 @@ class Agricole(Actor):
         agricoles = mongo.db.agricole.find()
         result = []
         for agricole in agricoles:
-            result.append({'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : agricole['user_ref']})
+            result.append({'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : str(agricole['user_ref'])})
         return result
 
     @staticmethod
     def get_one_agricole(_id):
         agricole = mongo.db.agricole.find_one({'_id': ObjectId(_id) })
-        return {'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : agricole['user_ref']}
+        return {'_id': str(agricole['_id']), 'localisation' : agricole['localisation'], 'user_ref' : str(agricole['user_ref'])}
 
     @staticmethod
     def filter_agricole(query):

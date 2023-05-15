@@ -67,7 +67,7 @@ def create_user():
 @admin_bp.route('/users/<string:_id>', methods=['PUT'])
 def update_user(_id):
     data = request.get_json()
-    result = User.update_user(_id, data['cin'], data['name'], data['email'], data['phone'], data['role'], data['type'],data['state'])
+    result = User.update_user(_id, data)
     if result :
         res = jsonify({'Message': 'user updated'})
         res.status_code = 200
