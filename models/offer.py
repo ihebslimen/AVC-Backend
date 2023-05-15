@@ -48,8 +48,8 @@ class Offer(Actor):
         return res.acknowledged
 
     @staticmethod
-    def update_offer(_id, quantity, quality, priceUnit, unit, state, actorType, actorRef):
-        res = mongo.db.offer.update_one({'_id': ObjectId(_id)}, {'$set': {'quantity': quantity, 'quality' : quality, 'priceUnit' : priceUnit, 'unit' : unit,'state' : state, 'actorType' : actorType, 'actorRef' : actorRef}})
+    def update_offer(_id, query):
+        res = mongo.db.offer.update_one({'_id': ObjectId(_id)}, {'$set': query})
         return res.acknowledged
     @staticmethod
     def delete_offer(_id):

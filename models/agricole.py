@@ -41,8 +41,8 @@ class Agricole(Actor):
         return res.acknowledged
 
     @staticmethod
-    def update_agricole(_id, localisation):
-        res = mongo.db.agricole.update_one({'_id': ObjectId(_id)}, {'$set': {'localisation' : localisation}})
+    def update_agricole(_id, query):
+        res = mongo.db.agricole.update_one({'_id': ObjectId(_id)}, {'$set': query})
         return res.acknowledged
 
     @staticmethod

@@ -57,12 +57,12 @@ def create_agricole():
 @admin_bp.route('/agricoles/<string:_id>', methods=['PUT'])
 def update_agricole(_id):
     data = request.get_json()
-    result = Agricole.update_agricole(_id, data['localisation'])
+    result = Agricole.update_agricole(_id, data)
     if result :
-        res = jsonify({'message': 'Agricole updated'})
+        res = jsonify({'Message': 'Agricole updated'})
         res.status_code = 200
     else:
-        res = jsonify({'message': 'Unable to update agricole'})
+        res = jsonify({'Error': 'Unable to update agricole'})
         res.status_code = 404
     return res
 
@@ -70,9 +70,47 @@ def update_agricole(_id):
 def delete_agricole(_id):
     result = Agricole.delete_agricole(_id)
     if result > 0:
-        res = jsonify({'message': 'Agricole deleted'})
+        res = jsonify({'Message': 'Agricole deleted'})
         res.status_code = 200
     else:
-        res = jsonify({'message': 'Unable to delete agricole'})
+        res = jsonify({'Error': 'Unable to delete agricole'})
+        res.status_code = 404
+    return res
+
+
+@user_bp.route('/agricoles/<string:_id>', methods=['PUT'])
+def update_agricole(_id):
+    auth_header = request.headers.get('Authorization')
+    jwt_token = auth_header.split(' ')[1]
+    decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+    if  decoded_token['user_id'] != _id:
+        res = jsonify({'Error' : "Unauthorized"})
+        res.status_code = 401
+        abort(res)
+    data = request.get_json()
+    result = Agricole.update_agricole(_id, data)
+    if result :
+        res = jsonify({'Message': 'Agricole updated'})
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Unable to update agricole'})
+        res.status_code = 404
+    return res
+
+@user_bp.route('/agricoles/<string:_id>', methods=['DELETE'])
+def delete_agricole(_id):
+    auth_header = request.headers.get('Authorization')
+    jwt_token = auth_header.split(' ')[1]
+    decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+    if  decoded_token['user_id'] != _id:
+        res = jsonify({'Error' : "Unauthorized"})
+        res.status_code = 401
+        abort(res)
+    result = Agricole.delete_agricole(_id)
+    if result > 0:
+        res = jsonify({'Message': 'Agricole deleted'})
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Unable to delete agricole'})
         res.status_code = 404
     return res

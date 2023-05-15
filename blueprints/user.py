@@ -5,9 +5,7 @@ from flask_cors import CORS
 
 user_bp = Blueprint('user', __name__)
 
-""" @user_bp.route('/', methods=['GET'])
-def hello():
-    return 'hello user'
+"""
 @user_bp.before_request
 def permissions_check():
     auth_header = request.headers.get('Authorization')

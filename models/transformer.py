@@ -41,8 +41,8 @@ class Transformer(Actor):
         return res.acknowledged
 
     @staticmethod
-    def update_transformer(_id, label, localisation):
-        res = mongo.db.transformer.update_one({'_id': ObjectId(_id)}, {'$set': {'label' : label ,'localisation' : localisation}})
+    def update_transformer(_id, query):
+        res = mongo.db.transformer.update_one({'_id': ObjectId(_id)}, {'$set': query})
         return res.acknowledged
 
     @staticmethod

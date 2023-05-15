@@ -40,8 +40,8 @@ class Exporter(Actor):
         return res.acknowledged
 
     @staticmethod
-    def update_exporter(_id, label):
-        res = mongo.db.exporter.update_one({'_id': ObjectId(_id)}, {'$set': {'label' : label }})
+    def update_exporter(_id, query):
+        res = mongo.db.exporter.update_one({'_id': ObjectId(_id)}, {'$set': query})
         return res.acknowledged
 
     @staticmethod
