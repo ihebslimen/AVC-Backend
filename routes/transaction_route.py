@@ -83,11 +83,9 @@ def send_transaction():
         if status == 1 :
             res = jsonify({'Message': 'Transaction succeeded'})
             res.status_code = 200
-            
         else:
             res = jsonify({'Error': 'Transaction failed'})
             res.status_code = 404
-
         return res
 
     except Exception as e:
