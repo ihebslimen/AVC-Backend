@@ -6,13 +6,12 @@ from flask_pymongo import PyMongo , ObjectId
 
 
 class Transformer(Actor):
-    def __init__(self,_id, type,localisation):
-        super.__init__(_id,  label, localisation)
+    def __init__(self,_id, label,localisation):
         self.label = label
         self.localisation = localisation
 
     @staticmethod
-    def get_all_transfomers():
+    def get_all_transformers():
         transformers = mongo.db.transformer.find()
         result = []
         for transformer in transformers:
