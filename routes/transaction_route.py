@@ -43,7 +43,7 @@ def send_transaction():
         decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
         private_key = decoded_token['private_key']
         public_key = decoded_token['public_key']    
-    #data = request.get_json()
+    data = request.get_json()
     private_key = data['public_key']
     private_key = data['private_key']
     contract_abi= {}
