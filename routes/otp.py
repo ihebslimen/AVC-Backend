@@ -62,6 +62,8 @@ def login():
     session['phone']=res['phone']
     session['role']=res['role']
     session['otp_timestamp'] = datetime.datetime.now().timestamp()
+    session['public_key'] = res['public_key']
+    session['private_key'] = res['private_key']
 
     # Send OTP to user (e.g. via SMS or email)
     verification = client.verify.v2.services(verify_sid) \
@@ -70,7 +72,7 @@ def login():
 
     print(verification.status)
     res.status_code = 401
-    res = jsonify({"message" : verification.status})
+    res = jsonify({"Message" : verification.status})
     res.status_code = 200
     return res
 
@@ -84,15 +86,17 @@ def verify_otp():
     verified_number = session.get('phone')
     role = session.get('role')
     otp_timestamp = session.get('otp_timestamp')
+    public_key = session.get('public_key')
+    private_key = session.get('private_key')
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
-        res = jsonify({"message" :'Invalid session' })
+        res = jsonify({"Message" :'Invalid session' })
         res.status_code = 401
         return res
 
     # Check OTP validity
     if datetime.datetime.now().timestamp() - otp_timestamp > OTP_VALIDITY_TIME:
-        res = jsonify({"message" :'OTP has expired' })
+        res = jsonify({"Message" :'OTP has expired' })
         res.status_code = 401
         return res
 
@@ -102,9 +106,9 @@ def verify_otp():
     print(verification_check.status) 
     
     # Create access token (e.g. using JWT)
-    payload = {'user_id': user_id, 'role' : role, 'exp': datetime.datetime(9999, 12, 31)}
+    payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key , 'private_key' : private_key, 'exp': datetime.datetime(9999, 12, 31)}
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-    res = jsonify({"message" :verification_check.status , "data": access_token })
+    res = jsonify({"Message" :verification_check.status , "data": access_token })
     res.status_code = 200
     #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
     return res

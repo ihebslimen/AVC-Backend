@@ -10,10 +10,10 @@ from blueprints.user import user_bp
 def get_all_exporters():
     exporters = exporter.get_all_exporters()
     if exporters :
-        res = jsonify({"message" : 'Get request succeeded'  , 'data': exporters})
+        res = jsonify({"Message" : 'Get request succeeded'  , 'data': exporters})
         res.status_code = 200
     else:
-        res = jsonify({'message': 'Unable to get all exporters'})
+        res = jsonify({'Error': 'Unable to get all exporters'})
         res.status_code = 404
     return res
 
@@ -22,10 +22,10 @@ def get_all_exporters():
 def get_one_exporter(_id):
     exporter = exporter.get_one_exporter(_id)
     if exporter :
-        res = jsonify({"message" : 'Get request succeeded' ,'data': exporter})
+        res = jsonify({"Message" : 'Get request succeeded' ,'data': exporter})
         res.status_code = 200
     else:
-        res = jsonify({'message': 'Unable to get exporter'})
+        res = jsonify({'Error': 'Unable to get exporter'})
         res.status_code = 404
     return res
 
@@ -34,10 +34,10 @@ def filter_exporter():
     data = request.get_json()
     exporter = Offer.filter_exporter(data)
     if exporter :
-        res = jsonify({"message" : 'Get request succeeded'  , 'data': exporter})
+        res = jsonify({"Message" : 'Get request succeeded'  , 'data': exporter})
         res.status_code = 200
     else:
-        res = jsonify({'message': 'Unable to get all exporter'})
+        res = jsonify({'Error': 'Unable to get all exporter'})
         res.status_code = 404
     return res
 
