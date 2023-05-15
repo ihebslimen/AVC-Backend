@@ -44,8 +44,8 @@ def send_transaction():
         private_key = decoded_token['private_key']
         public_key = decoded_token['public_key']    
     #data = request.get_json()
-    private_key = data['public_key']
-    private_key = data['private_key']
+    #private_key = data['public_key']
+    #private_key = data['private_key']
     contract_abi= {}
     # get the contract address from the blockchain by its name
     contract_address = contracts[data['contract_name']]['address']
