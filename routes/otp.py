@@ -54,7 +54,13 @@ def login():
     data = request.get_json()
     res = mongo.db.users.find_one({'cin': data['cin'] })
     if res is None :
-        return 'Wrong Credentials'
+        res = jsonify({"Error" : 'Wrong Credentials'})
+        res.status_code = 401
+        return res
+    elif res['state'] != "approved":
+        res = jsonify({"Error" : 'User not approved by admin'})
+        res.status_code = 401
+        return res
     
     # Store OTP secret and timestamp in session
     serialized_user_id = str(res['_id'])

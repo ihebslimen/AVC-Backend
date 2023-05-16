@@ -52,9 +52,9 @@ def create_user():
     data = request.get_json()
     
     if data['role'] == 'admin':
-        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'])
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'])
     else :
-        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['actorInfoJson'])
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['state'], data['actorInfoJson'])
     if result :
         res = jsonify({'Message': 'User created'})
         res.status_code = 200
