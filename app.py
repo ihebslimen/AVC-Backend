@@ -5,7 +5,7 @@ from blueprints.user import user_bp
 from routes.agricole_route import *
 from routes.transformer_route import *
 from routes.exporter_route import *
-from routes.otp import *
+from routes.otp_route import *
 from routes.user_route import * 
 from routes.offer_route import * 
 from routes.transaction_route import *

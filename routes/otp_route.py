@@ -12,6 +12,7 @@ import json
 from dotenv import load_dotenv
 from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
+from models.otp import OTP
 
 
 
@@ -36,15 +37,7 @@ verify_sid = os.environ.get('TWILIO_VERIFY_ID')
 
 client = Client(account_sid, auth_token)
 
-# Generate an OTP code
-def generate_otp():
-    totp = pyotp.TOTP(pyotp.random_base32(), digits=OTP_LENGTH, interval=OTP_VALIDITY_TIME)
-    return totp.now()
 
-# Verify an OTP code
-def verify_otp(otp, secret):
-    totp = pyotp.TOTP(secret, digits=OTP_LENGTH, interval=OTP_VALIDITY_TIME)
-    return totp.verify(otp)
 
 # Authenticate a user and generate an OTP
 @shared_bp.route('/login', methods=['POST'])
@@ -71,14 +64,13 @@ def login():
     session['public_key'] = res['public_key']
     session['private_key'] = res['private_key']
 
-    # Send OTP to user (e.g. via SMS or email)
-    verification = client.verify.v2.services(verify_sid) \
-      .verifications \
-      .create(to=res['phone'], channel="sms")
+    result = OTP.sendOTP(res['phone'])
+    if result != 'pending':
+        res = jsonify({"Errir" : result})
+        res.status_code = 404
+        return res
 
-    print(verification.status)
-    res.status_code = 401
-    res = jsonify({"Message" : verification.status})
+    res = jsonify({"Message" : "OTP generated successfully"})
     res.status_code = 200
     return res
 
@@ -106,15 +98,51 @@ def verify_otp():
         res.status_code = 401
         return res
 
-    verification_check = client.verify.v2.services(verify_sid) \
+
+    result = OTP.verifyOTP(verified_number,data['otp_code'])
+
+    if result != 'approved':
+        res = jsonify({"Error" : result})
+        res.status_code = 404
+        return res
+
+
+    """ verification_check = client.verify.v2.services(verify_sid) \
         .verification_checks \
         .create(to=verified_number, code=data['otp_code'])
-    print(verification_check.status) 
+    print(verification_check.status) """ 
     
     # Create access token (e.g. using JWT)
     payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key , 'private_key' : private_key, 'exp': datetime.datetime(9999, 12, 31)}
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-    res = jsonify({"Message" :verification_check.status , "data": access_token })
+    res = jsonify({"Message" :"Login successfully" , "data": access_token })
     res.status_code = 200
     #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
+    return res
+
+@shared_bp.route('/signup',  methods=['POST'])
+def signup():
+    data = request.get_json()
+    result1 = OTP.sendOTP(data['phone'])
+    if result != 'pending':
+        res = jsonify({"Errir" : result})
+        res.status_code = 404
+        return res
+
+    result2 = OTP.verifyOTP(verified_number,data['otp_code'])
+
+
+    if result2 != 'approved':
+        res = jsonify({"Error" : result})
+        res.status_code = 404
+        return res
+    
+    result3 = User.create_user(data['cin'], data['name'], data['email'], data['phone'], role='user',state = "waiting")
+    
+    if result3 :
+        res = jsonify({'Message': "Signup request successful, please wait for the admin to approve it" })
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Unable to get user'})
+        res.status_code = 404
     return res
