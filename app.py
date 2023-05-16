@@ -17,10 +17,10 @@ from flask_cors import CORS
 
 # settings app
 app = Flask(__name__)
-CORS(admin_bp)
-CORS(shared_bp)
-CORS(user_bp)
-CORS(app)
+CORS(admin_bp, resources={r"/*": {"origins": "*" , "methods":['*']}},  supports_credentials=True, expose_headers='Authorization')
+CORS(shared_bp, resources={r"/*": {"origins": "*" , "methods":['*']}},  supports_credentials=True, expose_headers='Authorization')
+CORS(user_bp, resources={r"/*": {"origins": "*" , "methods":['*']}},  supports_credentials=True, expose_headers='Authorization')
+CORS(app, resources={r"/*": {"origins": "*" , "methods":['*']}},  supports_credentials=True, expose_headers='Authorization')
 DEBUG = os.environ.get('DEBUG')
 MONGO_URI = os.environ.get('MONGO_URI')
 app.config['MONGO_URI'] = MONGO_URI
@@ -33,7 +33,7 @@ app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(shared_bp, url_prefix='/api/shared')
 
-CORS(app, resources={r"/*": {"origins": "*"}},  supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*" , "methods":['*']}},  supports_credentials=True, expose_headers='Authorization')
 
 @app.route('/hello', methods=['GET'])
 def hello():

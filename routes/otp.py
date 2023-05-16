@@ -71,7 +71,6 @@ def login():
       .create(to=res['phone'], channel="sms")
 
     print(verification.status)
-    res.status_code = 401
     res = jsonify({"Message" : verification.status})
     res.status_code = 200
     return res
