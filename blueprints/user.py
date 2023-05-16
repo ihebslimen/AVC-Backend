@@ -5,6 +5,9 @@ import os
 from flask_cors import CORS
 from flask_jwt_extended import  jwt_required
 
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+
 user_bp = Blueprint('user', __name__)
 @jwt_required
 @user_bp.before_request
