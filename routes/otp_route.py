@@ -70,14 +70,14 @@ def login():
         res.status_code = 404
         return res
 
-    res = jsonify({"Message" : "OTP generated successfully"})
+    res = jsonify({"Message" : "Login OTP generated successfully"})
     res.status_code = 200
     return res
 
 
 # Verify an OTP and return an access token
-@shared_bp.route('/verify_otp', methods=['POST'])
-def verify_otp():
+@shared_bp.route('/login_verification', methods=['POST'])
+def login_verification():
     # Verify OTP
     data = request.get_json()
     user_id = session.get('user_id')
@@ -106,12 +106,6 @@ def verify_otp():
         res = jsonify({"Error" : result})
         res.status_code = 404
         return res
-
-
-    """ verification_check = client.verify.v2.services(verify_sid) \
-        .verification_checks \
-        .create(to=verified_number, code=data['otp_code'])
-    print(verification_check.status) """ 
     
     # Create access token (e.g. using JWT)
     payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key , 'private_key' : private_key, 'exp': datetime.datetime(9999, 12, 31)}
@@ -123,26 +117,32 @@ def verify_otp():
 @shared_bp.route('/signup',  methods=['POST'])
 def signup():
     data = request.get_json()
-    result1 = OTP.sendOTP(data['phone'])
+    result = OTP.sendOTP(data['phone'])
     if result != 'pending':
-        res = jsonify({"Errir" : result})
+        res = jsonify({"Error" : result})
         res.status_code = 404
         return res
 
-    result2 = OTP.verifyOTP(verified_number,data['otp_code'])
+    res = jsonify({"Message" : "Signup OTP generated successfully"})
+    res.status_code = 200
+    return res
 
-
-    if result2 != 'approved':
+@shared_bp.route('/signup_verification', methods=['POST'])
+def signup_verification():
+    data = request.get_json()
+    result = OTP.verifyOTP(verified_number,data['otp_code'])
+    if result != 'approved':
         res = jsonify({"Error" : result})
         res.status_code = 404
         return res
     
-    result3 = User.create_user(data['cin'], data['name'], data['email'], data['phone'], role='user',state = "waiting")
+    result1 = User.create_user(data['cin'], data['name'], data['email'], data['phone'], role='user',state = "waiting")
     
-    if result3 :
-        res = jsonify({'Message': "Signup request successful, please wait for the admin to approve it" })
+    if result1 :
+        res = jsonify({'Message': "Signup request successful, waiting for the admin to approve it" })
         res.status_code = 200
     else:
-        res = jsonify({'Error': 'Unable to get user'})
+        res = jsonify({'Error': 'Unable to add user'})
         res.status_code = 404
     return res
+
