@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request
-from eth_abi import decode_abi
 from eth_abi.exceptions import DecodingError
 from web3 import Web3, WebsocketProvider
 from models.transaction import Transaction

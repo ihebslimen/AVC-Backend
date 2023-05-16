@@ -9,6 +9,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 user_bp = Blueprint('user', __name__)
+@user_bp.after_request
+
 @jwt_required
 @user_bp.before_request
 def permissions_check():
@@ -17,5 +19,5 @@ def permissions_check():
         abort(401)
     jwt_token = auth_header.split(' ')[1]
     decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
-    if not ( decoded_token['role']== 'user'):
+    if ( decoded_token['role']!= 'user'):
         abort(401)

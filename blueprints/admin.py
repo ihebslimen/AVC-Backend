@@ -9,18 +9,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 admin_bp = Blueprint('admin', __name__)
-
 @jwt_required()
 @admin_bp.before_request
 def permissions_check():
-    headers = request.headers
-    print(headers)
     auth_header = request.headers.get('Authorization')
     if not auth_header:
-        print( 'auth header not found')
         abort(401)
     jwt_token = auth_header.split(' ')[1]
     decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
-    if not ( decoded_token['role']== 'admin'):
-        print('not admin')
+    print(decoded_token)
+    if decoded_token['role'] != 'admin':
         abort(401)
