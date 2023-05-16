@@ -21,7 +21,11 @@ class User(Actor):
         users = mongo.db.users.find()
         result = []
         for user in users:
-            result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user['type'],'state' : user['state'], 'public_key' : user['public_key']})
+            if user['role']== 'user':
+                result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user['type'],'public_key' : user['public_key']})
+            elif user['role']== 'admin':
+                result.append({'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'public_key' : user['public_key']})
+
         return result
 
     @staticmethod

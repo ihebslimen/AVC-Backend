@@ -86,6 +86,7 @@ def verify_otp():
     otp_timestamp = session.get('otp_timestamp')
     public_key = session.get('public_key')
     private_key = session.get('private_key')
+    session.clear()
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
         res = jsonify({"Message" :'Invalid session' })
@@ -117,7 +118,6 @@ def verify_otp():
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
     res = jsonify({"Message" :"Login successfully" , "data": access_token })
     res.status_code = 200
-    #access_token = create_access_token(identity= {'id': user_id , 'role' : role},  expires_delta=expiration_time)
     return res
 
 @shared_bp.route('/signup',  methods=['POST'])
