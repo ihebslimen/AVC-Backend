@@ -31,8 +31,13 @@ class User(Actor):
     @staticmethod
     def get_one_user(_id):
         user = mongo.db.users.find_one({'_id': ObjectId(_id)})
-        return {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user['type'], 'state' : user['state'],'public_key' : user['public_key']}
+        if user['role']== 'user':
+            result=  {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'type' : user['type'],'public_key' : user['public_key']}
+        elif user['role']== 'admin':
+            result = {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'public_key' : user['public_key']}
 
+        return result
+        
     @staticmethod
     def filter_users(query):
         users = mongo.db.users.find(query)
@@ -58,8 +63,26 @@ class User(Actor):
 
     @staticmethod
     def update_user(_id , query):
+        user = mongo.db.users.find_one({'_id': ObjectId(_id)})
+
+        forbiddenQueriesAdmin = ['_id','role', 'cin' , 'public_key.txt' , 'private_key','state' , 'type'  ]
+        forbiddenQueriesUser = ['_id','role', 'cin' , 'public_key.txt' , 'private_key' ]
+        if user['role'] == 'admin':
+            for fq in forbiddenQueriesAdmin :
+                if fq in query:
+                    return f"Unable to update {fq} attribute"
+        elif user['role'] == 'user' : 
+            for fq in forbiddenQueriesUser:
+                if fq in query:
+                    return f"Unable to update {fq} attribute"
+                    
         res = mongo.db.users.update_one({'_id': ObjectId(_id)}, {'$set': query})
-        return res.acknowledged
+        if res.acknowledged :
+            result =  'updated'
+        else : 
+            result =  'not updated'
+
+        return result
     
     @staticmethod
     def delete_user(_id):

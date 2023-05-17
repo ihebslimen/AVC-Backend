@@ -1,5 +1,5 @@
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort,jsonify
 import jwt
 import os
 from flask_cors import CORS

@@ -68,7 +68,10 @@ def create_user():
 def update_user(_id):
     data = request.get_json()
     result = User.update_user(_id, data)
-    if result :
+    if 'Unable to update' in result:
+        res = jsonify({'Error': result})
+        res.status_code = 400
+    elif result == 'updated':
         res = jsonify({'Message': 'user updated'})
         res.status_code = 200
     else:
