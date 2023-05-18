@@ -54,7 +54,7 @@ def create_user():
     if data['role'] == 'admin':
         result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'])
     else :
-        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'],data['type'], data['state'], data['actorInfoJson'])
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'],data['type'], data['actorInfoJson'])
     if result :
         res = jsonify({'Message': 'User created'})
         res.status_code = 200
