@@ -13,6 +13,10 @@ from db import mongo
 from models.actor import Actor
 import os
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 
 # settings app
@@ -29,7 +33,17 @@ MONGO_URI = os.environ.get('MONGO_URI')
 app.config['MONGO_URI'] = MONGO_URI
 mongo.init_app(app)
 app.secret_key = 'mysecretkey'
+
+#### JWT Configuration
 app.config['JWT_SECRET_KEY'] = 'mysecretkey'
+app.config['JWT_TOKEN_LOCATION'] = "headers"
+app.config['JWT_HEADER_NAME'] = "Authorization"
+app.config["JWT_HEADER_TYPE"] = "Bearer"
+app.config["JWT_IDENTITY_CLAIM"] = "user_id" # user_id is defined by mongodb
+
+
+jwt = JWTManager(app)
+
 # blueprints
 
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
@@ -54,4 +68,4 @@ def handle_preflight():
 
 # Run Server
 if __name__ == '__main__':
-    app.run(debug=DEBUG)
+    app.run(host="0.0.0.0", debug=DEBUG)
