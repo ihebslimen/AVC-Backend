@@ -3,7 +3,7 @@ import os
 import json
 
 # Connect to a local Ethereum node (e.g. Ganache)
-web3 = Web3(WebsocketProvider('ws://192.168.1.216:8545'))
+web3 = Web3(WebsocketProvider('ws://127.0.0.1:8545'))
 
 
 
@@ -51,3 +51,65 @@ contract = web3.eth.contract(address=contracts['Farmer']['address'], abi=contrac
 events = contract.events.AdminAdded.get_logs(fromBlock=contracts['Farmer']['blockNumber'])
 print(events)
 #print(contract.functions.getAllAdmins().call())
+
+
+data = {
+    "public_key" : "0x14cF2d8cd6c0fB1C86B8845fd2a100C0804eebc7",
+    "private_key" : "0xe6a1a55d483b18a9aeb785dbb73311d38ea35d0894d6fb982d070761d10c3fc2",
+    "contract_name" : "Farmer",
+    "function_name" : "getAllAdmins"
+
+}
+public_key = data['public_key']
+private_key = data['private_key']
+contract_abi= {}
+# get the contract address from the blockchain by its name
+contract_address = contracts[data['contract_name']]['address']
+# fetch the contract ABI from the blockchain
+contract_abi = contracts[data['contract_name']]['abi']
+# create a contract object with the specified ABI and address
+
+
+
+# Set the function name and encoded data
+function_name = data['function_name']
+for  func  in contract_abi:
+    if 'name' in func:
+        if func['name'] == function_name:
+            function_abi = func
+            print(func, '\n \n')
+            break
+        
+
+
+# Encode the function selector
+function_selector = Web3.keccak(text=f"{function_name}()")[:4].hex()
+
+contract = web3.eth.contract(address=contract_address, abi=contract_abi)
+encoded_function_call = contract.encodeABI(function_name)
+# Encode the function arguments
+#encoded_inputs = encode_abi([input['type'] for input in function_abi['inputs']], function_inputs).hex()
+
+# Combine the function selector and arguments
+#encoded_data = f"0x{function_selector}{encoded_inputs}"
+
+# Set the transaction parameters
+transaction_params = {
+    'to': contract_address,
+    'data': encoded_function_call,
+    'gas': web3.eth.estimate_gas({'to': contract_address, 'data': encoded_function_call}),
+    'gasPrice': web3.eth.gas_price,
+    'nonce': web3.eth.get_transaction_count(public_key),
+}
+
+# Sign the transaction
+signed_transaction = web3.eth.account.sign_transaction(transaction_params, private_key)
+
+# Send the signed transaction to the network
+transaction_hash = web3.eth.send_raw_transaction(signed_transaction.rawTransaction)
+
+# Wait for the transaction to be mined
+transaction_receipt = web3.eth.wait_for_transaction_receipt(transaction_hash)
+
+# Print the transaction receipt
+print(transaction_receipt)
