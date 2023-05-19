@@ -245,3 +245,4 @@ def send_transaction1():
     # Print the transaction receipt
     print(transaction_receipt)
     return jsonify( transaction_receipt['status'])
+
