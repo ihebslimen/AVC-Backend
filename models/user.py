@@ -4,6 +4,7 @@ from db import mongo
 from models.actor import Actor
 
 
+
 class User(Actor):
     def __init__(self,_id, cin, name, email, phone, role, type,state, actor_id):
         self._id
@@ -48,15 +49,22 @@ class User(Actor):
     @staticmethod
     def create_user(cin, name, email, phone, role, state, type ='', actorInfoJson = ''):
         keys = Actor.generate_key_pair()
-        if role == 'admin':
-            user = {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'state': state,"public_key": keys['public_key'],"private_key" : keys['private_key']}
-            res = mongo.db.users.insert_one(user)
-        elif role == 'user':
-            user = {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type,'state': state,"public_key": keys['public_key'],"private_key" : keys['private_key'] }
-            user_id = mongo.db.users.insert_one(user).inserted_id
-            actorInfoJson['user_ref'] = user_id
-            print('##############',actorInfoJson)
-            res = mongo.db[type].insert_one(actorInfoJson)
+
+        with mongo.cx.start_session() as session:
+            with session.start_transaction():
+                print(session)
+                if role == 'admin':
+                    user = {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'state': state,"public_key": keys['public_key'],"private_key" : keys['private_key']}
+                    res = mongo.db.users.insert_one(user, session=session)
+                elif role == 'user':
+                    
+                    user = {'cin': cin, 'name':name, 'email': email, 'phone': phone, 'role': role, 'type' : type,'state': state,"public_key": keys['public_key'],"private_key" : keys['private_key'] }
+                    user_id = mongo.db.users.insert_one(user, session  =session).inserted_id
+                    
+                    
+                    actorInfoJson['user_ref'] = user_id
+                    print('##############',actorInfoJson)
+                    res = mongo.db[type].insert_one(actorInfoJson)
         print(res.acknowledged)
         return res.acknowledged
 

@@ -46,6 +46,7 @@ def filter_agricole():
 def create_agricole():
     data = request.get_json()
     result = Agricole.create_agricole(data['localisation'] )
+
     if result :
         res = jsonify({'Message': 'Agricole created'})
         res.status_code = 200
