@@ -66,7 +66,7 @@ def create_offer():
 
 @user_bp.route('/offers/<string:_id>', methods=['PUT'])
 def update_offer(_id):
-    offer = Offer.get_one_offer({'_id':ObjectId(_id) })
+    offer = Offer.get_one_offer(_id)
     auth_header = request.headers.get('Authorization')
     if auth_header :
         jwt_token = auth_header.split(' ')[1]
@@ -88,11 +88,12 @@ def update_offer(_id):
 
 @user_bp.route('/offers/<string:_id>', methods=['DELETE'])
 def delete_offer(_id):
+    offer = Offer.get_one_offer(_id)
     auth_header = request.headers.get('Authorization')
     if auth_header :
         jwt_token = auth_header.split(' ')[1]
         decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
-        if  decoded_token['user_id'] != _id:
+        if  decoded_token['user_id'] != offer['actorRef']:
             res = jsonify({'Error' : "Unauthorized"})
             res.status_code = 401
             abort(res)
