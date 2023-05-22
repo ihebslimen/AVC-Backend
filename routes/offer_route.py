@@ -4,6 +4,8 @@ import jwt
 from models.offer import Offer
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
+from flask_pymongo import PyMongo , ObjectId
+
 import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -64,7 +66,7 @@ def create_offer():
 
 @user_bp.route('/offers/<string:_id>', methods=['PUT'])
 def update_offer(_id):
-    offer = Offer.get_one_offer({'_id': _id})
+    offer = Offer.get_one_offer({'_id':ObjectId(_id) })
     auth_header = request.headers.get('Authorization')
     if auth_header :
         jwt_token = auth_header.split(' ')[1]
