@@ -1,6 +1,6 @@
 
 from flask import Blueprint, jsonify, request
-
+import jwt
 from models.offer import Offer
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
