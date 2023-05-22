@@ -1,9 +1,10 @@
+from web3 import Web3, WebsocketProvider
 from config_web3 import web3
 from config_web3 import contracts
 import os
 
 
-class Farmer:
+class Admin:
     def __init__(self, _web3, _keys, _address, _id, _name, _phone, _info = "data", _data = "") -> None:
         self.web3 = _web3
         self.address = _address
@@ -26,7 +27,7 @@ class Farmer:
             {   
                 'from' : self.keys["pub_key"],
                 'gasPrice': self.web3.eth.gas_price,
-                'nonce': self.web3.eth.get_transaction_count(self.keys["pub_key"]),
+                'nonce': self.web3.eth.get_transaction_count('0x5b70559bcccece4c410e4d7016095f3694097bf2fd2bd22d5f4d3e5371951bd5'),
                 "chainId" : self.web3.eth.chain_id
             }
         )

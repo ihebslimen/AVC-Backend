@@ -15,9 +15,9 @@ f = Farmer(
     "farmer"
 )
 
-#print(f)
-#f.save()
-
+print(f)
+f.save()
+""" 
 from web3 import Web3, WebsocketProvider,HTTPProvider
 import os
 import json
@@ -87,4 +87,4 @@ event_filter = web3.eth.filter({"fromBlock": "earliest",
     "toBlock": "latest", "address": "0x4747DC6f644A9d5Bc4Ae48BE2cC3179735AeC94F"})
 print("\n\n\n\n", )
 
-print(web3.eth.get_transaction_receipt("0x12b05f6717b17deaba718516de9bd7a7303c31ba1631400e000f2986eba9678e"))
+print(web3.eth.get_transaction_receipt("0x12b05f6717b17deaba718516de9bd7a7303c31ba1631400e000f2986eba9678e")) """
