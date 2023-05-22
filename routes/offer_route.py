@@ -4,6 +4,9 @@ import jwt
 from models.offer import Offer
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
+import os
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 
 
 

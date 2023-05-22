@@ -18,7 +18,7 @@ web3 = Web3(WebsocketProvider(ENDPOINT))
 
 contracts =  {}
 # Set the path to the folder containing the files
-folder_path = '../AVC-Blockchain-master/build/contracts'
+folder_path = '../AVC-Blockchain/build/contracts'
 
 # Loop through all the files in the folder
 for filename in os.listdir(folder_path):
