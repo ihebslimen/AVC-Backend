@@ -1,6 +1,9 @@
 from web3 import Web3, WebsocketProvider
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 # create a web3 instance
