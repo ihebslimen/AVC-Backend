@@ -2,7 +2,6 @@ from config_web3 import web3
 from config_web3 import contracts
 import os
 
-
 class Farmer:
     def __init__(self, _web3, _keys, _address, _id, _name, _phone, _info = "data", _data = "") -> None:
         self.web3 = _web3

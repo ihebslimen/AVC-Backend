@@ -1,8 +1,24 @@
 from web3models.Farmer import Farmer
 from config_web3 import web3
 from config_web3 import contracts
+from web3models.account import Account
 
-f = Farmer(
+A = Account(
+    "0x570f6A732ec0A6B898Fa6748F6C8dd72F4EA8AC7",
+    "0x9f674056caac23d98bdcdfc5804b71fc15a482c2745ef6e077f583354e45735c"
+
+)
+
+print(A)
+
+A.addFarmer(
+    "0x2D84Ce11482f380F4492Dd254b4aD2D49FC2F35A",
+    0x645e7a488b96b66d55bde08e,
+    "iheb",
+    61848468,
+    "farmer"
+)
+""" f = Farmer(
     web3,
     {
         "pub_key" : "0x4747DC6f644A9d5Bc4Ae48BE2cC3179735AeC94F",
@@ -13,10 +29,10 @@ f = Farmer(
     "14415698",
     34567890,
     "farmer"
-)
+) """
 
-print(f)
-f.save()
+""" print(f)
+f.save() """
 """ 
 from web3 import Web3, WebsocketProvider,HTTPProvider
 import os
