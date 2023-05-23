@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
 from models.otp import OTP
+from models.user import User
 
 
 
@@ -45,28 +46,30 @@ def login():
     # Authenticate user
     #username = request.form['email']
     data = request.get_json()
-    res = mongo.db.users.find_one({'cin': data['cin'] })
+    res = User.filter_users({'cin' : data['cin'] })
     if res is None :
         res = jsonify({"Error" : 'Wrong Credentials'})
         res.status_code = 401
         return res
-    elif res['state'] != "approved":
-        res = jsonify({"Error" : 'User not approved by admin'})
-        res.status_code = 401
-        return res
+
+    elif (res[0]['role'] == 'user'):
+        if res[0]['state'] != "approved" :
+            res = jsonify({"Error" : 'User not approved by admin'})
+            res.status_code = 401
+            return res
     
     # Store OTP secret and timestamp in session
-    serialized_user_id = str(res['_id'])
+    serialized_user_id = str(res[0]['_id'])
     session['user_id'] = serialized_user_id
-    session['phone']=res['phone']
-    session['role']=res['role']
+    session['phone']=res[0]['phone']
+    session['role']=res[0]['role']
     session['otp_timestamp'] = datetime.datetime.now().timestamp()
-    session['public_key'] = res['public_key']
-    session['private_key'] = res['private_key']
+    session['public_key'] = res[0]['public_key']
+    session['private_key'] = res[0]['private_key']
 
-    result = OTP.sendOTP(res['phone'])
+    result = OTP.sendOTP(res[0]['phone'])
     if result != 'pending':
-        res = jsonify({"Errir" : result})
+        res = jsonify({"Error" : result})
         res.status_code = 404
         return res
 
@@ -87,7 +90,6 @@ def login_verification():
     public_key = session.get('public_key')
     private_key = session.get('private_key')
     session.clear()
-    print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
         res = jsonify({"Message" :'Invalid session' })
         res.status_code = 401
