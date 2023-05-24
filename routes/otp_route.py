@@ -30,12 +30,14 @@ def login():
     # Authenticate user
     #username = request.form['email']
     data = request.get_json()
-    res = User.filter_users({'cin' : data['cin'] })
-    if res is None :
+    print(data)
+    res = User.filter_users(data)
+    print(res)
+    if len(res) == 0:
         res = jsonify({"Error" : 'Wrong Credentials'})
         res.status_code = 401
         return res
-
+    
     elif (res[0]['role'] == 'user'):
         if res[0]['state'] != "approved" :
             res = jsonify({"Error" : 'User not approved by admin'})
@@ -106,7 +108,9 @@ def login_verification():
 @shared_bp.route('/signup',  methods=['POST'])
 def signup():
     data = request.get_json()
+    session['data']=data
     result = OTP.sendOTP(data['phone'])
+
     if result != 'pending':
         res = jsonify({"Error" : result})
         res.status_code = 404
@@ -118,14 +122,17 @@ def signup():
 
 @shared_bp.route('/signup_verification', methods=['POST'])
 def signup_verification():
-    data = request.get_json()
-    result = OTP.verifyOTP(verified_number,data['otp_code'])
+    req = request.get_json()
+    data = session.get('data')
+    verified_number = data['phone']
+
+    result = OTP.verifyOTP(verified_number,req['otp_code'])
     if result != 'approved':
         res = jsonify({"Error" : result})
         res.status_code = 404
         return res
-    
-    result1 = User.create_user(data['cin'], data['name'], data['email'], data['phone'], role='user',state = "waiting")
+    print(data)
+    result1 = User.create_user(cin = data['cin'], name=data['name'], email=data['email'], phone=data['phone'],type=data['type'],actorInfoJson=data['actorInfoJson'] , role='user',state = "waiting")
     
     if result1 :
         res = jsonify({'Message': "Signup request successful, waiting for the admin to approve it" })

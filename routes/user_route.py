@@ -25,6 +25,7 @@ def get_all_users():
 def filter_users():
     data = request.get_json()
     users = User.filter_users(data)
+    print(users)
     if users :
         res = jsonify({"Message" : 'Get request succeeded'  , 'data': users})
         res.status_code = 200
