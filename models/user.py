@@ -40,6 +40,8 @@ class User(Actor):
         
     @staticmethod
     def filter_users(query):
+        if '_id' in query:
+            query['_id'] = ObjectId(query['_id'])
         users = mongo.db.users.find(query)
         result = []
         for user in users:
