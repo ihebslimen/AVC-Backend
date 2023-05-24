@@ -51,9 +51,9 @@ class User(Actor):
         return result
     @staticmethod
     def create_user(cin, name, email, phone, role, state, type ='', actorInfoJson = ''):
-        filter_result = User.filter_users('cin')
+        filter_result = User.filter_users({'cin':cin})
         if filter_result:
-            return "Cin already signed up"
+            return "User already signed up"
         
         keys = Actor.generate_key_pair()
         if role == 'admin':
@@ -64,7 +64,10 @@ class User(Actor):
             user_id = mongo.db.users.insert_one(user).inserted_id
             actorInfoJson['user_ref'] = user_id
             res = mongo.db[type].insert_one(actorInfoJson)
-        return res.acknowledged
+        if res.acknowledged :
+            return 'succeed'
+        else:
+            return 'failed'
 
 
     @staticmethod

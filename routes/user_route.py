@@ -55,7 +55,10 @@ def create_user():
         result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'])
     else :
         result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'],data['type'], data['actorInfoJson'])
-    if result :
+    if result == 'User already signed up':
+        res = jsonify({'Message': 'User already signed up'})
+        res.status_code = 404
+    elif result == 'succeed':
         res = jsonify({'Message': 'User created'})
         res.status_code = 200
     else:
@@ -72,7 +75,7 @@ def update_user(_id):
         res = jsonify({'Error': result})
         res.status_code = 400
     elif result == 'updated':
-        res = jsonify({'Message': 'user updated'})
+        res = jsonify({'Message': 'User updated'})
         res.status_code = 200
     else:
         res = jsonify({'Error': 'Unable to update user'})
