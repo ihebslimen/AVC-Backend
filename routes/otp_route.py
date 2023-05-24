@@ -20,24 +20,8 @@ from models.user import User
 
 load_dotenv()
 
-
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# Define OTP parameters
-OTP_LENGTH = 6
 OTP_VALIDITY_TIME = 300  # seconds
-# Set the expiration time of the token to 1 hour
-expiration_time = datetime.timedelta(hours=12)
-
-
-# Set environment variables for your credentials
-# Read more at http://twil.io/secure
-account_sid = os.environ.get('TWILIO_ACCOUNT_ID')
-auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
-verify_sid = os.environ.get('TWILIO_VERIFY_ID')
-
-client = Client(account_sid, auth_token)
-
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # Authenticate a user and generate an OTP
@@ -66,6 +50,8 @@ def login():
     session['otp_timestamp'] = datetime.datetime.now().timestamp()
     session['public_key'] = res[0]['public_key']
     session['private_key'] = res[0]['private_key']
+
+    print(res[0]['phone'])
 
     result = OTP.sendOTP(res[0]['phone'])
     if result != 'pending':
@@ -101,6 +87,7 @@ def login_verification():
         res.status_code = 401
         return res
 
+    print(verified_number , data['otp_code'])
 
     result = OTP.verifyOTP(verified_number,data['otp_code'])
 
