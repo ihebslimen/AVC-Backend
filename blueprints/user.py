@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 user_bp = Blueprint('user', __name__)
-@jwt_required
+""" @jwt_required
 @user_bp.before_request
 def permissions_check():
     auth_header = request.headers.get('Authorization')
@@ -23,4 +23,4 @@ def permissions_check():
     if ( decoded_token['role'] != 'user'):
         res = jsonify({"Error" : "Unauthorized Access Request"})
         res.status_code = 401
-        abort(res)
+        abort(res) """
