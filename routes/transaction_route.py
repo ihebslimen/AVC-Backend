@@ -11,7 +11,7 @@ import binascii
 
 
 # create a web3 instance
-ENDPOINT = os.environ.get('ENDPOINT')
+ENDPOINT = 'ws://127.0.0.1:8545'
 web3 = Web3(WebsocketProvider(ENDPOINT))
 #Check Connection
 #t=web3.isConnected()

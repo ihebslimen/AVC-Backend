@@ -5,6 +5,8 @@ from blueprints.admin import admin_bp
 from blueprints.user import user_bp
 
 
+SECRET_KEY = 'secretkey'
+
 
 @admin_bp.route('/transformers', methods=['GET'])
 def get_all_transformers():

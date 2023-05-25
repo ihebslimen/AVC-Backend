@@ -7,7 +7,7 @@ from flask_cors import CORS , cross_origin
 import jwt
 import os
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'secretkey'
 
 
 @admin_bp.route('/users', methods=['GET'])

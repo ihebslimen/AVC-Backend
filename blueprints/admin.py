@@ -5,7 +5,7 @@ import os
 from flask_cors import CORS
 from flask_jwt_extended import  jwt_required
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'secretkey'
 
 
 admin_bp = Blueprint('admin', __name__)

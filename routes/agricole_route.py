@@ -4,6 +4,7 @@ from models.agricole import Agricole
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
 
+SECRET_KEY = 'secretkey'
 
 
 @admin_bp.route('/agricoles', methods=['GET'])

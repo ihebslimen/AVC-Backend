@@ -8,7 +8,7 @@ from routes.exporter_route import *
 from routes.otp_route import *
 from routes.user_route import * 
 from routes.offer_route import * 
-from routes.transaction_route import *
+#from routes.transaction_route import *
 from routes.violation_route import *
 from db import mongo
 from models.actor import Actor
@@ -25,12 +25,13 @@ CORS(admin_bp, origins='*', allow_headers=["Content-Type", "Authorization", "Acc
 CORS(user_bp, origins='*', allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],   supports_credentials = True)
 CORS(shared_bp, origins='*', allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],   supports_credentials = True)
 CORS(app, origins='*', allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],   supports_credentials = True)
-DEBUG = os.environ.get('DEBUG')
-MONGO_URI = os.environ.get('MONGO_URI')
+DEBUG = 1
+MONGO_URI = 'mongodb+srv://iheb:iheb@cluster0.bjpaw5n.mongodb.net/supplychain?retryWrites=true&w=majority'
+
 app.config['MONGO_URI'] = MONGO_URI
 mongo.init_app(app)
 app.secret_key = 'mysecretkey'
-app.config['JWT_SECRET_KEY'] = 'mysecretkey'
+app.config['JWT_SECRET_KEY'] = 'secretkey'
 # blueprints
 
 app.register_blueprint(admin_bp, url_prefix='/api/admin')

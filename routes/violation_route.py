@@ -8,7 +8,7 @@ from flask_pymongo import PyMongo , ObjectId
 
 import os
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'secretkey'
 
 @admin_bp.route('/violations', methods=['GET'])
 def get_all_violations():

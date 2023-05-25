@@ -30,9 +30,9 @@ expiration_time = datetime.timedelta(hours=12)
 
 # Set environment variables for your credentials
 # Read more at http://twil.io/secure
-account_sid = os.environ.get('TWILIO_ACCOUNT_ID')
-auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
-verify_sid = os.environ.get('TWILIO_VERIFY_ID')
+account_sid = 'AC473ea59d5754b0141f8bc5e6f4159e4b'
+auth_token = "604c6eb2b506ba23d19300a863109c46"
+verify_sid = 'VA33258626b1e5f2a3ff10f7fb7668a79c'
 
 client = Client(account_sid, auth_token)
 
