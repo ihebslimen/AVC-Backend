@@ -31,7 +31,7 @@ class Product:
         signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)
         send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)
-        #print(tx_receipt)
+        print(tx_receipt)
         if tx_receipt['status'] == 1:
             return("transaction successful")
         else:
@@ -114,7 +114,7 @@ class Product:
         signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)
         send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)
-        #print(tx_receipt)
+        print(tx_receipt)
         if tx_receipt['status'] == 1:
             return("transaction successful")
         else:
