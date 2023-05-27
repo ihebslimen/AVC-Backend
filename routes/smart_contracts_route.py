@@ -6,6 +6,28 @@ from blueprints.user import user_bp
 from blueprints.admin import admin_bp
 from web3models.Account import *
 
+
+def serialize_function(obj):
+    if isinstance(obj, type):
+        return str(obj)
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+
+def process_events(tuple_data):
+    serialized_data = str(tuple_data[0])
+    parsed_data = json.loads(serialized_data)
+
+    function_name = parsed_data['function']
+    print(function_name)
+
+    serialized_data = json.dumps({
+        'function': str(tuple_data[0]),
+        'arguments': tuple_data[1]
+    })
+    print(serialized_data)
+    history.append(serialized_data)
+
+
 Admin = Account('0x5D2D4A1e21BBAa13D253Ee131C93De2E617D5461', '0x05ec8f1e5e541c6bf36113a7673fa39263951c5352e77f2773a38c92bc673462')
 #Farmer = Account('0x15220960a8844306d54D149de4e775F82d1f2B19', '0x813ac0a9db697bb7846de1c4f6ddbe8385d7341d40d24e8a1df31d599fdabb97')
 Farmer = Account('0x421472051071af95d1425E290D814dFd55d81b14', '0x3d9aa950abab7b58435322af7788962cee9fcccf6fa7eaadff1125e0d326d981')
@@ -382,5 +404,132 @@ def get_all_offers_blockchain():
         res.status_code = 200
     else:
         res = jsonify({'Error': 'Get All Offers Failed!!'})
+        res.status_code = 404
+    return res
+
+
+
+@admin_bp.route('/blockchain/transaction_history', methods=['POST'])
+def transaction_history():
+    history = []
+    try:
+
+        event_filter_offer = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": OfferContract.address})
+        event_filter_product = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": ProductContract.address})
+
+        event_filter_actor = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": AccessControlContract.address})
+
+        for log in event_filter_product.get_all_entries():
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            tuple_data = ProductContract.decode_function_input(transaction.input)
+            function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+            arguments = tuple_data[1]
+            serialized_data = {'function': function_name, 'args': arguments }
+            history.append(serialized_data)
+
+        for log in event_filter_offer.get_all_entries():
+
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            tuple_data = OfferContract.decode_function_input(transaction.input)
+            function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+            arguments = tuple_data[1]
+            serialized_data = {'function': function_name, 'args': arguments }
+            history.append(serialized_data)
+
+        for log in event_filter_actor.get_all_entries():
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            tuple_data = AccessControlContract.decode_function_input(transaction.input)
+            function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+            arguments = tuple_data[1]
+            serialized_data = {'function': function_name, 'args': arguments }
+            history.append(serialized_data)
+
+    except Exception as e:
+        error_msg = str(e).split("revert")[-1].strip()
+        res= jsonify({'Error': error_msg})
+        res.status_code = 404
+        return res
+    if len(history) != 0 :
+        res = jsonify({'Message': 'Get Transactions History Succeeded!!', 'data': history})
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Get Transactions History Failed!!'})
+        res.status_code = 404
+    return res
+
+
+@user_bp.route('/blockchain/transaction_history', methods=['POST'])
+def account_transaction_history():
+    data = request.get_json()
+    history = []
+    try:
+
+        event_filter_offer = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": OfferContract.address})
+        event_filter_product = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": ProductContract.address})
+
+        event_filter_actor = web3.eth.filter({
+            "fromBlock": "earliest",
+            "toBlock": "latest", 
+            "address": AccessControlContract.address})
+
+        for log in event_filter_product.get_all_entries():
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            if transaction['from'] == Farmer.pub_key:
+                tuple_data = ProductContract.decode_function_input(transaction.input)
+                function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+                arguments = tuple_data[1]
+                serialized_data = {'function': function_name, 'args': arguments }
+                history.append(serialized_data)
+
+        for log in event_filter_offer.get_all_entries():
+
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            if transaction['from'] == Farmer.pub_key:
+                tuple_data = OfferContract.decode_function_input(transaction.input)
+                function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+                arguments = tuple_data[1]
+                serialized_data = {'function': function_name, 'args': arguments }
+                history.append(serialized_data)
+
+        for log in event_filter_actor.get_all_entries():
+            txh = log.get("transactionHash")
+            transaction = web3.eth.get_transaction(txh)
+            if transaction['from'] == data['pub_key']:
+                tuple_data = AccessControlContract.decode_function_input(transaction.input)
+                function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+                arguments = tuple_data[1]
+                serialized_data = {'function': function_name, 'args': arguments }
+                history.append(serialized_data)
+
+    except Exception as e:
+        error_msg = str(e).split("revert")[-1].strip()
+        res= jsonify({'Error': error_msg})
+        res.status_code = 404
+        return res
+    if len(history) != 0 :
+        res = jsonify({'Message': 'Get Account Transactions History Succeeded!!', 'data': history})
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Get Account Transactions History Failed!!'})
         res.status_code = 404
     return res
