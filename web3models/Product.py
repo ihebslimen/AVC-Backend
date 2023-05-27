@@ -10,6 +10,11 @@ contract_address = contracts["Product"]["address"]
 contract_abi = contracts["Product"]["abi"]
 ProductContract =web3.eth.contract(address=contract_address, abi=contract_abi)
 
+contract_address_offer = contracts["Offer"]["address"]
+contract_abi_offer = contracts["Offer"]["abi"]
+OfferContract =web3.eth.contract(address=contract_address_offer, abi=contract_abi_offer)
+
+
 
 class Product:
     def __init__(self, pub_key , priv_key) -> None:
@@ -31,7 +36,7 @@ class Product:
         signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)
         send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)
-        print(tx_receipt)
+        #print(tx_receipt)
         if tx_receipt['status'] == 1:
             return("transaction successful")
         else:
@@ -114,7 +119,6 @@ class Product:
         signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)
         send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)
-        print(tx_receipt)
         if tx_receipt['status'] == 1:
             return("transaction successful")
         else:
@@ -163,8 +167,8 @@ class Product:
 
 
     def createOffer(self, _offer_id, _prod_id, _prod_qty, _price) -> None:
-        functionCall = ProductContract.functions.transferProduct(
-              _addr, _prod_id, _prod_qty
+        functionCall = OfferContract.functions.createOffer(
+              _offer_id, _prod_id, _prod_qty, _price
         ).build_transaction(
             {   
                 'from' : self.pub_key,
@@ -191,6 +195,29 @@ class Product:
                 'gasPrice': web3.eth.gas_price,
                 'nonce': web3.eth.get_transaction_count(self.pub_key),
                 "chainId" : web3.eth.chain_id
+            }
+        )
+        signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)
+        send_tx = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        tx_receipt = web3.eth.wait_for_transaction_receipt(send_tx)
+        #print(tx_receipt)
+        if tx_receipt['status'] == 1:
+            return("transaction successful")
+        else:
+            return("transaction failed")
+
+
+
+    def buyOffer(self, _offer_id) -> None:
+        functionCall = OfferContract.functions.buyOffer(
+              _offer_id
+        ).build_transaction(
+            {   
+                'from' : self.pub_key,
+                'gasPrice': web3.eth.gas_price,
+                'nonce': web3.eth.get_transaction_count(self.pub_key),
+                "chainId" : web3.eth.chain_id,
+                'value' : 10**18
             }
         )
         signed_tx = web3.eth.account.sign_transaction(functionCall, private_key=self.priv_key)

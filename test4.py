@@ -1,36 +1,49 @@
 from web3models.Farmer import Farmer
-from web3models.AccessControl import AccessControl  
+from web3models.AccessControl import AccessControl ,AccessControlContract 
 from web3models.Product import Product ,ProductContract
+from web3models.Offer import Offer ,OfferContract
 
 
 
 
-A = AccessControl( "0x3601CC532A0Eda5AE73968f7309d3faB86dCDbD2",  "0x142d68b9650d0a43c4a2d4388c0df087b0112a692d65ee9e40f040d8493d2623")
-P = Product("0xF5D67A0179BA2EF800B23383e1a71429E8e7FBa4",  "0x35264236e3fc2e3efdb75b6858417ef908e892d4fe2e54be7fe4c201e8dfdd61")
-P1  = Product('0x9D14f2d9b3afAC6Dd20d1d70c27890B6BB27d778', '0x58180787bede620fe369c788a187e9c74ca60ce56a2a317221a4f5e3b922eb52') 
-""" result = A.hasUserType("0x3601CC532A0Eda5AE73968f7309d3faB86dCDbD2",0)
-print('###### has user type',result)
 
-result = A.setUserType("0xF5D67A0179BA2EF800B23383e1a71429E8e7FBa4",1)
-print('###### set user type',result)
+A = AccessControl( "0x3114361C91A0647c0DbF9202c03197cdFf6c5152",  "0xb279d7e16d94de21c9a05434b8404c5482a6c5f75a3d91bef9a44c4800c596bb")
+P = Product("0x52F7edC583AB01C1c8926fDd6B6533CC8a402D31",  "0xa3751db70dfe6eda5a4314d1f7b5c88fe489dc55150f95ced20f53f1a283df64")
+P1  = Product('0x3617776C8EAC094584b41590497085f497Ba9579', '0x90d778d32c2db802f7434951528f3b195f234e9be360fed9043a9992d1dac082') 
+
+""" result = P.createProduct(1, 2, 1)
+print('###### create product',result) 
+ """
+""" result = P.createOffer(2, 1, 1, 1)
+print('###### buy offer',result)  """
+
+result = P1.buyOffer(2)
+print('###### buy offer',result)
+
+#result = A.setUserType("0xCB69CAE44C467DB8f8e859890789E9a846e0BDBC",1)
+""" result = AccessControlContract.functions.hasUserType("0xCB69CAE44C467DB8f8e859890789E9a846e0BDBC",1).call()
+print('###### has user type',result) """
+""" 
+
+
 result = A.setUserType("0x9D14f2d9b3afAC6Dd20d1d70c27890B6BB27d778",1)
 print('###### set user type',result)
 
 
+ """
 
+""" 
+result = P.createProduct(P.pub_key,3, 1, 1)
+print('###### create product',result) 
+result = ProductContract.functions.isProductOwner(P.pub_key, 3).call()
+print('###### is Product Owner',result)
+ """
 
+""" 
 
 
 
  """
-
-
-result = P.createProduct(3, 1, 1)
-print('###### create product',result)
-
-result = ProductContract.functions.isProductOwner(P.pub_key, 3).call()
-print('###### is Product Owner',result)
-
 
 """ 
 
