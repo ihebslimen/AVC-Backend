@@ -1,24 +1,48 @@
-from web3models.Farmer import Farmer
-from web3models.AccessControl import AccessControl ,AccessControlContract 
-from web3models.Product import Product ,ProductContract
-from web3models.Offer import Offer ,OfferContract
+from web3models.Account import *
 
 
 
 
 
-A = AccessControl( "0x3114361C91A0647c0DbF9202c03197cdFf6c5152",  "0xb279d7e16d94de21c9a05434b8404c5482a6c5f75a3d91bef9a44c4800c596bb")
-P = Product("0x52F7edC583AB01C1c8926fDd6B6533CC8a402D31",  "0xa3751db70dfe6eda5a4314d1f7b5c88fe489dc55150f95ced20f53f1a283df64")
-P1  = Product('0x3617776C8EAC094584b41590497085f497Ba9579', '0x90d778d32c2db802f7434951528f3b195f234e9be360fed9043a9992d1dac082') 
+A = Account( "0x5D2D4A1e21BBAa13D253Ee131C93De2E617D5461",  "0x05ec8f1e5e541c6bf36113a7673fa39263951c5352e77f2773a38c92bc673462")
+P = Account("0x15220960a8844306d54D149de4e775F82d1f2B19",  "0x813ac0a9db697bb7846de1c4f6ddbe8385d7341d40d24e8a1df31d599fdabb97")
+P1 = Account('0x421472051071af95d1425E290D814dFd55d81b14', '0x3d9aa950abab7b58435322af7788962cee9fcccf6fa7eaadff1125e0d326d981') 
 
-""" result = P.createProduct(1, 2, 1)
+
+result = AccessControlContract.functions.hasUserType(A.pub_key,1).call()
+print('###### has user type',result)
+
+""" result = P.createProduct(2, 2, 1)
 print('###### create product',result) 
- """
-""" result = P.createOffer(2, 1, 1, 1)
-print('###### buy offer',result)  """
+
+result = P.createOffer(2, 1, 1, 1)
+print('###### create offer',result) 
 
 result = P1.buyOffer(2)
 print('###### buy offer',result)
+
+result = OfferContract.functions.getOfferByOwner(P.pub_key).call()
+print('###### get Offer By Owner ',result)
+
+ """
+event_filter = web3.eth.filter({"fromBlock": "earliest",
+    "toBlock": "latest", "address": OfferContract.address})
+
+event_filter1 = web3.eth.filter({"fromBlock": "earliest",
+    "toBlock": "latest", "address": ProductContract.address})
+
+for log in event_filter.get_all_entries():
+    # Access the relevant information from the log
+    txh = log.get("transactionHash")
+    transaction = web3.eth.get_transaction(txh)
+    print(OfferContract.decode_function_input(transaction.input))
+
+for log in event_filter1.get_all_entries():
+    # Access the relevant information from the log
+    txh = log.get("transactionHash")
+    transaction = web3.eth.get_transaction(txh)
+    print(ProductContract.decode_function_input(transaction.input))
+
 
 #result = A.setUserType("0xCB69CAE44C467DB8f8e859890789E9a846e0BDBC",1)
 """ result = AccessControlContract.functions.hasUserType("0xCB69CAE44C467DB8f8e859890789E9a846e0BDBC",1).call()

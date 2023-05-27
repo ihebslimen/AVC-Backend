@@ -9,6 +9,8 @@ from routes.otp_route import *
 from routes.user_route import * 
 from routes.offer_route import * 
 from routes.transaction_route import *
+from routes.smart_contracts_route import *
+
 from db import mongo
 from models.actor import Actor
 import os
