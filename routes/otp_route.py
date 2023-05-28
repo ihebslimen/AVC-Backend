@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request, session
 from twilio.rest import Client
 from random import randint
 import os
+import time
 from twilio.rest import Client
 import pyotp
 import datetime
@@ -97,8 +98,13 @@ def login_verification():
         res.status_code = 401
         return res
 
-
     result = OTP.verifyOTP(verified_number,data['otp_code'])
+
+    
+    while result ==  'pending':
+        time.sleep(1)
+        result = OTP.verifyOTP(verified_number,data['otp_code'])
+        
 
     if result != 'approved':
         res = jsonify({"Error" : result})
