@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,url_for
 from models.transaction import Transaction
 import json
 import os
+import requests
 from blueprints.user import user_bp
 from blueprints.admin import admin_bp
 from web3models.Account import *
@@ -28,7 +29,7 @@ def process_events(tuple_data):
     history.append(serialized_data)
 
 
-Admin = Account('0xBA23F297dB176C4472CCeA0455125c5812eA54a5', '0x0f97892845449f6c56754773ed2eb35635c6a5dac817e66c4204087e07d31e4e')
+Admin = Account('0xCCcA87c5831B9526543E53eB7C12e8871F1F8449', '0xf32c18bd4b3c01328cfa8dd3875572b2ea4021ad51782c877ba4489587583814')
 #Farmer = Account('0x15220960a8844306d54D149de4e775F82d1f2B19', '0x813ac0a9db697bb7846de1c4f6ddbe8385d7341d40d24e8a1df31d599fdabb97')
 Farmer = Account('0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1', '0x9db9507b443ad8a5fadf4afed0fba7336b4597347426491225f0d93dc9061e84')
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
@@ -36,70 +37,44 @@ map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
 @user_bp.route('/blockchain/actor_type', methods=['POST'])
 def actor_type():
     data = request.get_json()
-    for i in range(0,3):
+    for  key, val  in map_actor_type.items():
         try:
-            result = AccessControlContract.functions.hasUserType(data['pub_key'],i).call()
+            result = AccessControlContract.functions.hasUserType(data['pub_key'],val).call()
+            if result:
+                res = jsonify({'Message' : key })
+                res.status_code = 200  
+                return res
         except Exception as e:
             error_msg = str(e).split("revert")[-1].strip()
             res= jsonify({'Error': error_msg})
             res.status_code = 404
             return res
-        if result:
-            if result == 0:
-                actor_type = None
-            elif result == 1:
-                actor_type = 'Admin'
-            elif result == 2:
-                actor_type = 'Farmer'
-            elif i == 3:
-                actor_type = 'Transformer'
-            break
-        else :
-            continue
-    
-    if actor_type == None:
-        res = jsonify({'Error' : 'This address is not subscribed to the chain' })
-        res.status_code = 404
-    else:
-        res = jsonify({'Message' : actor_type })
-        res.status_code = 200  
+        
+    res = jsonify({'Error' : 'This address is not subscribed to the chain' })
+    res.status_code = 404
     return res
 
 @admin_bp.route('/blockchain/actor_type', methods=['POST'])
 def actor_type():
     data = request.get_json()
-    for i in range(0,3):
+    for  key, val  in map_actor_type.items():
         try:
-            result = AccessControlContract.functions.hasUserType(data['pub_key'],i).call()
+            result = AccessControlContract.functions.hasUserType(data['pub_key'],val).call()
+            if result:
+                res = jsonify({'Message' : key })
+                res.status_code = 200  
+                return res
         except Exception as e:
             error_msg = str(e).split("revert")[-1].strip()
             res= jsonify({'Error': error_msg})
             res.status_code = 404
             return res
-        print(result)
-        if result:
-            if i == 0:
-                actor_type = None
-                break
-            elif i == 1:
-                actor_type = 'Admin'
-                break
-            elif i == 2:
-                actor_type = 'Farmer'
-                break
-            elif i == 3:
-                actor_type = 'Transformer'
-                break
-        else :
-            continue
-    
-    if actor_type == None:
-        res = jsonify({'Error' : 'This address is not subscribed to the chain' })
-        res.status_code = 404
-    else:
-        res = jsonify({'Message' : actor_type })
-        res.status_code = 200  
+        
+    res = jsonify({'Error' : 'This address is not subscribed to the chain' })
+    res.status_code = 404
     return res
+
+    
 
 @admin_bp.route('/blockchain/add_farmer', methods=['POST'])
 def add_farmer():
@@ -177,21 +152,24 @@ def remove_actor():
 def delete_account():
     try:
         data = request.get_json()
-        result = Admin.delUserType( data['pub_key'], map_actor_type[data['actor_type']])
-        print(result)
+        for key, val in map_actor_type.items():
+            result = AccessControlContract.functions.hasUserType(data['pub_key'],val).call()
+            if result:
+                break
+        print(val)
+        result1 = Admin.delUserType( data['pub_key'], val)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
         res.status_code = 404
         return res
-    if result:
+    if result1:
         res = jsonify({'Message': 'Account Deleted'})
         res.status_code = 200
-    elif not result:
+    elif not result1:
         res = jsonify({'Error': 'Deleting Account Failed'})
         res.status_code = 404
     return res
-
 
 @user_bp.route('/blockchain/create_product', methods=['POST'])
 def create_product():

@@ -8,41 +8,44 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         self.test_app = app.test_client()
 
-    def add_admin(self):
+    def test_add_admin(self):
         url = 'http://localhost:5000/api/admin/blockchain/add_admin'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0x284D3F4eE02f401e1CC8D0aAF4D9837959B66Ef7"}
+        data =    { "pub_key" : "0x9Aa1297EFa5b155b90a777876bB571A3d0c73e2c"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
         print("Should Add Admin To Blockchain : passed!") 
-    
-    def add_farmer(self):
+
+    def test_add_farmer(self):
         url = 'http://localhost:5000/api/admin/blockchain/add_farmer'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1"}
+        data =    { "pub_key" : "0x0f17280E07F9E0F3843Ecfd0E7483baC117cF065"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
         print("Should Add Farmer To Blockchain : passed!") 
-    def add_transformer(self):
+
+    def test_add_transformer(self):
         url = 'http://localhost:5000/api/admin/blockchain/add_transformer'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0x05AC9d84A0ccFdd0740e943eEC3347c5bC3b34E3"}
+        data =    { "pub_key" : "0x6783dB16B89390cb181903422B811Eb14Ccd0a27"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
         print("Should Add Transformer To Blockchain : passed!") 
-    def remove_actor(self):
+
+
+    def test_remove_actor(self):
         url = 'http://localhost:5000/api/admin/blockchain/remove_actor'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1"}
+        data =    { "pub_key" : "0x6783dB16B89390cb181903422B811Eb14Ccd0a27"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
@@ -50,21 +53,21 @@ class MyTestCase(unittest.TestCase):
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
         print("Should Revoke Account Actor Type of Blockchain : passed!") 
 
-    def delete_account(self):
+    def test_delete_account(self):
         url = 'http://localhost:5000/api/admin/blockchain/delete_account'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1"}
+        data =    { "pub_key" : "0x0f17280E07F9E0F3843Ecfd0E7483baC117cF065"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
-        print("Should Deletr Account From Blockchain : passed!") 
+        print("Should Delete Account From Blockchain : passed!") 
 
-    def get_actor_type(self):
+    def test_get_actor_type(self):
         url = 'http://localhost:5000/api/admin/blockchain/actor_type'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
-        data =    { "pub_key" : "0xBA23F297dB176C4472CCeA0455125c5812eA54a5"}
+        data =    { "pub_key" : "0xCCcA87c5831B9526543E53eB7C12e8871F1F8449"}
         response = requests.post(url,headers=headers , json=data)
         res_json = response.json()  # Parse the raw response data as JSON
         
