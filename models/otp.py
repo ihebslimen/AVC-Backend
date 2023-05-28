@@ -12,6 +12,7 @@ import json
 from dotenv import load_dotenv
 from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
+import asyncio
 
 
 
@@ -59,6 +60,11 @@ class OTP:
             verification_check = client.verify.v2.services(verify_sid) \
             .verification_checks \
             .create(to=verified_number, code=otp_code)
+
+
+            while verification_check.status == 'pending':
+                time.sleep(1)  # Wait for 1 second
+                verification_check = verification_check.fetch()
             return verification_check.status
         except Exception as e:
             return(f"Unexpected error: {str(e)}")

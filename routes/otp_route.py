@@ -98,13 +98,8 @@ def login_verification():
         res.status_code = 401
         return res
 
-    result = OTP.verifyOTP(verified_number,data['otp_code'])
-
-    
-    while result ==  'pending':
-        time.sleep(1)
-        result = OTP.verifyOTP(verified_number,data['otp_code'])
-        
+    result =  OTP.verifyOTP(verified_number,data['otp_code'])
+  
 
     if result != 'approved':
         res = jsonify({"Error" : result})
