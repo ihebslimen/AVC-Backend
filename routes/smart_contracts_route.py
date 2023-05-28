@@ -28,9 +28,9 @@ def process_events(tuple_data):
     history.append(serialized_data)
 
 
-Admin = Account('0x5D2D4A1e21BBAa13D253Ee131C93De2E617D5461', '0x05ec8f1e5e541c6bf36113a7673fa39263951c5352e77f2773a38c92bc673462')
+Admin = Account('0xBA23F297dB176C4472CCeA0455125c5812eA54a5', '0x0f97892845449f6c56754773ed2eb35635c6a5dac817e66c4204087e07d31e4e')
 #Farmer = Account('0x15220960a8844306d54D149de4e775F82d1f2B19', '0x813ac0a9db697bb7846de1c4f6ddbe8385d7341d40d24e8a1df31d599fdabb97')
-Farmer = Account('0x421472051071af95d1425E290D814dFd55d81b14', '0x3d9aa950abab7b58435322af7788962cee9fcccf6fa7eaadff1125e0d326d981')
+Farmer = Account('0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1', '0x9db9507b443ad8a5fadf4afed0fba7336b4597347426491225f0d93dc9061e84')
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
 
 @user_bp.route('/blockchain/actor_type', methods=['POST'])

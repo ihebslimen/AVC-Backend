@@ -55,9 +55,7 @@ app.register_blueprint(shared_bp, url_prefix='/api/shared')
 
 CORS(app, origins='*', allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],   supports_credentials = True)
 
-@app.route('/hello', methods=['GET'])
-def hello():
-    return 'hello world'
+
 
 @app.before_request
 def handle_preflight():
