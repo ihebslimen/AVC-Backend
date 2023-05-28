@@ -8,6 +8,142 @@ class MyTestCase(unittest.TestCase):
     def setUp(self):
         self.test_app = app.test_client()
 
+
+    def test_create_product(self):
+        url = 'http://localhost:5000/api/user/blockchain/create_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "product_id": 5,
+                    "product_quantity": 1,
+                    "product_quality": 1
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        res_json = response.json()  # Parse the raw response data as JSON
+        
+        self.assertEqual(response.status_code, 404)
+        #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
+        print("Should Create Product ID To Blockchain : passed!") 
+
+    def test_create_duplicated_product(self):
+        url = 'http://localhost:5000/api/user/blockchain/create_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "product_id": 5,
+                    "product_quantity": 1,
+                    "product_quality": 1
+                    }
+        response = requests.post(url,headers=headers , json=data)        
+        self.assertEqual(response.status_code, 404)
+        #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
+        print("Should Not Have Duplicated Product ID To Blockchain : passed!") 
+
+    def test_invalid_product_quality(self):
+        url = 'http://localhost:5000/api/user/blockchain/create_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "product_id": 5,
+                    "product_quantity": 1,
+                    "product_quality": 4
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        res_json = response.json()  # Parse the raw response data as JSON
+        
+        self.assertEqual(response.status_code, 404)
+        print("Should Only Have Product Quality [1,2,3] To Blockchain : passed!") 
+
+
+    def test_update_product(self):
+        url = 'http://localhost:5000/api/user/blockchain/update_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "product_id": 5,
+                    "product_quantity": 2,
+                    "product_quality": 2
+                    }
+        response = requests.post(url,headers=headers , json=data)        
+        self.assertEqual(response.status_code, 200)
+        print("Should Update Product Quality And Quality To Blockchain : passed!") 
+
+
+
+    def test_check_product_product(self):
+        url = 'http://localhost:5000/api/user/blockchain/check_owner_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "pub_key": "0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa",
+                    "product_id" : 1
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        self.assertEqual(response.status_code, 200)
+        print("Should Confirm Product Ownership To Blockchain : passed!") 
+
+    
+    def test_get_Products_by_owner(self):
+        url = 'http://localhost:5000/api/user/blockchain/get_products'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "pub_key": "0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa"
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        self.assertEqual(response.status_code, 200)
+        print("Should Return All Actor's Products from Blockchain : passed!")
+
+    def create_offer(self):
+        url = 'http://localhost:5000/api/user/blockchain/create_offer'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    { "offer_id": 5,
+                    "product_id": 5,
+                    "product_quantity": 1,
+                    "price": 1
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        self.assertEqual(response.status_code, 404)
+        print("Should Create Offer In Blockchain : passed!") 
+
+    def test_get_Offers_by_owner(self):
+        url = 'http://localhost:5000/api/user/blockchain/get_actor_offers'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "pub_key": "0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa"
+                    }
+        response = requests.post(url,headers=headers , json=data)
+        self.assertEqual(response.status_code, 200)
+        print("Should Return All Actor's Offer from Blockchain : passed!") 
+
+
+    def test_get_all_offers(self):
+        url = 'http://localhost:5000/api/user/blockchain/get_all_offers'
+        headers = {"Content-Type": "application/json"}
+        data ={
+                    "pub_key": "0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa"
+                }
+        response = requests.post(url)
+        self.assertEqual(response.status_code, 200)
+        print("Should Return All Offers On Blockchain : passed!") 
+
+
+    def test_buy_offer(self):
+        url = 'http://localhost:5000/api/user/blockchain/buy_offer'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "offer_id" : 5
+                    }
+        response = requests.post(url,headers=headers , json=data)        
+        self.assertEqual(response.status_code, 200)
+        print("Should Buy Offer In Blockchain : passed!") 
+
+    def test_delete_product(self):
+        url = 'http://localhost:5000/api/user/blockchain/delete_product'  # Replace with the actual URL of the route
+        headers = {"Content-Type": "application/json"}
+        data =    {
+                    "product_id": 2
+                    }
+        response = requests.post(url,headers=headers , json=data)        
+        self.assertEqual(response.status_code, 200)
+        print("Should Delete Product To Blockchain : passed!")
+
+
+"""
     def test_add_admin(self):
         url = 'http://localhost:5000/api/admin/blockchain/add_admin'  # Replace with the actual URL of the route
         headers = {"Content-Type": "application/json"}
@@ -74,7 +210,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(res_json['Message'], 'Get request succeeded')  # Assert the response data is 'hello world'
         print("Should Get Account Actor Type of Blockchain : passed!") 
-
+ """
 
 """ def test_hello_route(self):
         url = 'http://localhost:5000/'  # Replace with the actual URL of the route

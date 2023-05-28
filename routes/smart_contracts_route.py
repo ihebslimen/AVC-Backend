@@ -29,9 +29,9 @@ def process_events(tuple_data):
     history.append(serialized_data)
 
 
-Admin = Account('0xCCcA87c5831B9526543E53eB7C12e8871F1F8449', '0xf32c18bd4b3c01328cfa8dd3875572b2ea4021ad51782c877ba4489587583814')
-#Farmer = Account('0x15220960a8844306d54D149de4e775F82d1f2B19', '0x813ac0a9db697bb7846de1c4f6ddbe8385d7341d40d24e8a1df31d599fdabb97')
-Farmer = Account('0x567fbd48860C8e0138CF10Fe7A40c83eAdf129F1', '0x9db9507b443ad8a5fadf4afed0fba7336b4597347426491225f0d93dc9061e84')
+Admin = Account('0x3EF79ac6ec2A9cDEFBF92373cacFCA06Be43E31a', '0x2c3c81773a7fa70c7b781f8acccb2bdc48edb81e94f4a7c35332bef6bda03b45')
+Farmer1 = Account('0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa', '0x97fabd0b099d4133febd6330ea41157b5079fcdea323488a0b3984bb295b833e')
+Farmer = Account('0x17545D9CD7128479d35e52b82f030BF51b0046a1', '0x20a7e43e8b0cbc06bec8e8c6552ad131d7ddd3ded9e2c6b07e29eb862ead15a9')
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
 
 @user_bp.route('/blockchain/actor_type', methods=['POST'])
@@ -331,7 +331,7 @@ def get_offer_owner():
 def buy_offer():
     data = request.get_json()
     try:
-        result = Farmer.buyOffer( data['offer_id'])
+        result = Farmer1.buyOffer( data['offer_id'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
