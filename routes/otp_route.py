@@ -127,7 +127,7 @@ def signup():
 @shared_bp.route('/signup_verification', methods=['POST'])
 def signup_verification():
     data = request.get_json()
-    result = OTP.verifyOTP(verified_number,data['otp_code'])
+    result = OTP.verifyOTP(data['phone'],data['otp_code'])
     if result != 'approved':
         res = jsonify({"Error" : result})
         res.status_code = 404
