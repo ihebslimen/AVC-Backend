@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request, session
 from twilio.rest import Client
 from random import randint
 import os
-import time
 from twilio.rest import Client
 import pyotp
 import datetime
