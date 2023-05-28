@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
 from models.otp import OTP
+from models.user import User
 
 
 
@@ -50,27 +51,24 @@ def login():
         res = jsonify({"Error" : 'Wrong Credentials'})
         res.status_code = 401
         return res
-    elif res['state'] != "approved":
-        res = jsonify({"Error" : 'User not approved by admin'})
-        res.status_code = 401
-        return res
+
+    elif res['role'] == 'user':
+    
+        if res['state'] != "approved":
+            res = jsonify({"Error" : 'User not approved by admin'})
+            res.status_code = 401
+            return res
     
     # Store OTP secret and timestamp in session
     serialized_user_id = str(res['_id'])
-    session['user_id'] = serialized_user_id
-    session['phone']=res['phone']
-    session['role']=res['role']
-    session['otp_timestamp'] = datetime.datetime.now().timestamp()
-    session['public_key'] = res['public_key']
-    session['private_key'] = res['private_key']
-
+    otp_timestamp = datetime.datetime.now().timestamp()
     result = OTP.sendOTP(res['phone'])
     if result != 'pending':
-        res = jsonify({"Errir" : result})
+        res = jsonify({"Error" : result})
         res.status_code = 404
         return res
 
-    res = jsonify({"Message" : "Login OTP generated successfully"})
+    res = jsonify({"Message" : "Login OTP generated successfully", 'data': {'_id':serialized_user_id, 'otp_timestamp':otp_timestamp}})
     res.status_code = 200
     return res
 
@@ -80,13 +78,14 @@ def login():
 def login_verification():
     # Verify OTP
     data = request.get_json()
-    user_id = session.get('user_id')
-    verified_number = session.get('phone')
-    role = session.get('role')
-    otp_timestamp = session.get('otp_timestamp')
-    public_key = session.get('public_key')
-    private_key = session.get('private_key')
-    session.clear()
+    res = User.get_one_user(data['data']['_id'])
+
+    user_id =res['user_id']
+    verified_number = ['phone']
+    role = ['role']
+    otp_timestamp = data['data']['otp_timestamp']
+    public_key = res['public_key']
+    private_key = res['private_key']
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
         res = jsonify({"Message" :'Invalid session' })
