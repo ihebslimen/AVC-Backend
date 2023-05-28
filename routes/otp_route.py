@@ -61,7 +61,7 @@ def login():
     
     # Store OTP secret and timestamp in session
     serialized_user_id = str(res['_id'])
-    otp_timestamp = datetime.datetime.now().timestamp()
+    otp_timestamp = str(datetime.datetime.now().timestamp())
     result = OTP.sendOTP(res['phone'])
     if result != 'pending':
         res = jsonify({"Error" : result})
@@ -78,14 +78,12 @@ def login():
 def login_verification():
     # Verify OTP
     data = request.get_json()
-    res = User.get_one_user(data['data']['_id'])
-
-    user_id =res['user_id']
-    verified_number = ['phone']
-    role = ['role']
-    otp_timestamp = data['data']['otp_timestamp']
+    res = User.get_one_user(data['_id'])
+    user_id =data['_id']
+    verified_number = res['phone']
+    role = res['role']
+    otp_timestamp = data['otp_timestamp']
     public_key = res['public_key']
-    private_key = res['private_key']
     print(user_id , otp_timestamp)
     if not user_id or not otp_timestamp:
         res = jsonify({"Message" :'Invalid session' })
@@ -93,7 +91,7 @@ def login_verification():
         return res
 
     # Check OTP validity
-    if datetime.datetime.now().timestamp() - otp_timestamp > OTP_VALIDITY_TIME:
+    if datetime.datetime.now().timestamp() - float(otp_timestamp) > OTP_VALIDITY_TIME:
         res = jsonify({"Message" :'OTP has expired' })
         res.status_code = 401
         return res
@@ -107,7 +105,7 @@ def login_verification():
         return res
     
     # Create access token (e.g. using JWT)
-    payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key , 'private_key' : private_key, 'exp': datetime.datetime(9999, 12, 31)}
+    payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
     res = jsonify({"Message" :"Login successfully" , "data": access_token })
     res.status_code = 200
