@@ -87,7 +87,7 @@ def update_offer(_id):
 @user_bp.route('/offers/buy_offer', methods=['POST'])
 def buy_offer():
     data = request.get_json()
-    offer = Offer.get_one_offer()
+    offer = Offer.get_one_offer(data['_id'])
     auth_header = request.headers.get('Authorization')
     if auth_header :
         jwt_token = auth_header.split(' ')[1]
