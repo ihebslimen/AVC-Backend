@@ -31,9 +31,10 @@ expiration_time = datetime.timedelta(hours=12)
 
 # Set environment variables for your credentials
 # Read more at http://twil.io/secure
-account_sid = 'AC473ea59d5754b0141f8bc5e6f4159e4b'
-auth_token = "604c6eb2b506ba23d19300a863109c46"
-verify_sid = 'VA33258626b1e5f2a3ff10f7fb7668a79c'
+account_sid = 'AC5782b21395fb63eb3edb8080ca84b22e'
+auth_token = '6b0bff9560371d0f1b2045631d9a625c'
+verify_sid = 'VAdfe95cc61a3700fa82d2088bf0be189c'
+
 
 client = Client(account_sid, auth_token)
 
