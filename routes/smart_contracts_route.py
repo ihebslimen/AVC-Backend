@@ -29,9 +29,10 @@ def process_events(tuple_data):
     history.append(serialized_data)
 
 
-Admin = Account('0x3EF79ac6ec2A9cDEFBF92373cacFCA06Be43E31a', '0x2c3c81773a7fa70c7b781f8acccb2bdc48edb81e94f4a7c35332bef6bda03b45')
-Farmer1 = Account('0xC7d138b89b55535Da5E4bd5E470B8Df81decFDAa', '0x97fabd0b099d4133febd6330ea41157b5079fcdea323488a0b3984bb295b833e')
-Farmer = Account('0x17545D9CD7128479d35e52b82f030BF51b0046a1', '0x20a7e43e8b0cbc06bec8e8c6552ad131d7ddd3ded9e2c6b07e29eb862ead15a9')
+Admin = Account('0x406FbC169A5715f67b8E4bCB0eccc1C87c0DF7D4', '0x24e29dcdd56a31663eb242ab319b391322d66a87eb4d674af372268c84f5e0e6')
+Farmer = Account('0x621b2b26c981368Ab2072667E5e1Ae31aD0a17A8', '0x92a7d57a3d476b90cdb422e3d6084c18e3b9b59c5146b9f0f81de4bf05253e5d')
+Farmer1 = Account('0xD3A84148B9A8460ee4DaC690f7d9a3cd693c824D', '0x1909eeb493c56ca0ca100bffc2c626729b9aab055a34844092d2a447542d9687')
+
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
 
 @user_bp.route('/blockchain/actor_type', methods=['POST'])
@@ -189,7 +190,23 @@ def create_product():
         res.status_code = 404
     return res
 
-
+@user_bp.route('/blockchain/delete_product', methods=['POST'])
+def delete_product():
+    data = request.get_json()
+    try:
+        result = Farmer.deleteProduct( data['product_id'])
+    except Exception as e:
+        error_msg = str(e).split("revert")[-1].strip()
+        res= jsonify({'Error': error_msg})
+        res.status_code = 404
+        return res
+    if result:
+        res = jsonify({'Message': 'Product Deleted'})
+        res.status_code = 200
+    elif not result:
+        res = jsonify({'Error': 'Deleting Product Failed'})
+        res.status_code = 404
+    return res
 
 
 @user_bp.route('/blockchain/update_product', methods=['POST'])
@@ -207,24 +224,6 @@ def update_product():
         res.status_code = 200
     elif not result:
         res = jsonify({'Error': 'Updating Product Failed'})
-        res.status_code = 404
-    return res
-
-@user_bp.route('/blockchain/delete_product', methods=['POST'])
-def delete_product():
-    data = request.get_json()
-    try:
-        result = Farmer.deleteProduct( data['product_id'])
-    except Exception as e:
-        error_msg = str(e).split("revert")[-1].strip()
-        res= jsonify({'Error': error_msg})
-        res.status_code = 404
-        return res
-    if result:
-        res = jsonify({'Message': 'Product Deleted'})
-        res.status_code = 200
-    elif not result:
-        res = jsonify({'Error': 'Deleting Product Failed'})
         res.status_code = 404
     return res
 
@@ -267,7 +266,7 @@ def get_product_owner():
 
 
 
-@user_bp.route('/blockchain/get_products', methods=['POST'])
+@user_bp.route('/blockchain/get_actor_products', methods=['POST'])
 def get_products():
     data = request.get_json()
     try:

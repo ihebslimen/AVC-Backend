@@ -59,16 +59,14 @@ def login():
             res.status_code = 401
             return res
     
-    # Store OTP secret and timestamp in session
     serialized_user_id = str(res['_id'])
-    otp_timestamp = str(datetime.datetime.now().timestamp())
     result = OTP.sendOTP(res['phone'])
     if result != 'pending':
         res = jsonify({"Error" : result})
         res.status_code = 404
         return res
 
-    res = jsonify({"Message" : "Login OTP generated successfully", 'data': {'_id':serialized_user_id, 'otp_timestamp':otp_timestamp}})
+    res = jsonify({"Message" : "Login OTP generated successfully", 'data': {'_id':serialized_user_id}})
     res.status_code = 200
     return res
 
@@ -82,20 +80,7 @@ def login_verification():
     user_id =data['_id']
     verified_number = res['phone']
     role = res['role']
-    otp_timestamp = data['otp_timestamp']
     public_key = res['public_key']
-    print(user_id , otp_timestamp)
-    if not user_id or not otp_timestamp:
-        res = jsonify({"Message" :'Invalid session' })
-        res.status_code = 401
-        return res
-
-    # Check OTP validity
-    if datetime.datetime.now().timestamp() - float(otp_timestamp) > OTP_VALIDITY_TIME:
-        res = jsonify({"Message" :'OTP has expired' })
-        res.status_code = 401
-        return res
-
 
     result = OTP.verifyOTP(verified_number,data['otp_code'])
 
