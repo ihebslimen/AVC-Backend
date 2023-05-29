@@ -84,6 +84,46 @@ def update_offer(_id):
     return res
 
 
+@user_bp.route('/offers/buy_offer', methods=['POST'])
+def buy_offer():
+    data = request.get_json()
+    offer = Offer.get_one_offer()
+    auth_header = request.headers.get('Authorization')
+    if auth_header :
+        jwt_token = auth_header.split(' ')[1]
+        decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+        actorType = decoded_token['type']
+        result = Offer.update_offer(offer['_id'], {'actorRef': user_id, "actorType": actorType})
+        if result :
+            res = jsonify({'Message': 'offer Bought'})
+            res.status_code = 200
+        else:
+            res = jsonify({'Error': 'Unable to Buy Offer'})
+            res.status_code = 404
+        return res
+    else:
+        res = jsonify({'Error': 'Header is Missing!!!'})
+        res.status_code = 401
+        return res
+
+    """ 
+@user_bp.route('/offers/buy_offer', methods=['POST'])
+def buy_offer():
+    data = request.get_json()
+    offer = Offer.get_one_offer(data['_id'])
+    user_id = data['user_id']
+    result = Offer.update_offer(offer['_id'], {'actorRef': user_id, "actorType": data["actorType"]})
+    if result :
+        res = jsonify({'Message': 'offer Bought'})
+        res.status_code = 200
+    else:
+        res = jsonify({'Error': 'Unable to Buy Offer'})
+        res.status_code = 404
+    return res
+
+ """
+
 @user_bp.route('/offers/<string:_id>', methods=['DELETE'])
 def delete_offer(_id):
     offer = Offer.get_one_offer(_id)

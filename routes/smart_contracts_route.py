@@ -327,7 +327,7 @@ def get_offer_owner():
     return res
 
 @user_bp.route('/blockchain/buy_offer', methods=['POST'])
-def buy_offer():
+def buy_offer_blockchain():
     data = request.get_json()
     try:
         result = Farmer1.buyOffer( data['offer_id'])

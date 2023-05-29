@@ -83,6 +83,7 @@ def login_verification():
     verified_number = res['phone']
     role = res['role']
     public_key = res['public_key']
+    
 
     result = OTP.verifyOTP(verified_number,data['otp_code'])
 
@@ -92,7 +93,14 @@ def login_verification():
         return res
     
     # Create access token (e.g. using JWT)
-    payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
+    if(role == 'admin'):
+        payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
+    
+    elif(role == 'user'):
+        actorType = res['type']
+        payload = {'user_id': user_id, 'role' : role,'type':actorType ,'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
+
+    
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
     res = jsonify({"Message" :"Login successfully" , "data": access_token })
     res.status_code = 200
