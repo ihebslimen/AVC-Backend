@@ -35,7 +35,7 @@ class Agricole(Actor):
         return result
         
     @staticmethod
-    def create_agricole( localisation):
+    def create_agricole(localisation):
         agricole = {'localisation' : localisation}
         res = mongo.db.agricole.insert_one(agricole)
         return res.acknowledged

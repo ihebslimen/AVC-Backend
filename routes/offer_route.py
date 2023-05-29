@@ -24,9 +24,7 @@ def get_all_offers():
         res.status_code = 404
     return res
     
-
-
-@user_bp.route('/filter_offers', methods=['POST'])
+@user_bp.route('/offers/filter_offers', methods=['POST'])
 def filter_offers():
     data = request.get_json()
     offers = Offer.filter_offers(data)
@@ -53,8 +51,8 @@ def get_one_offer(_id):
 @user_bp.route('/offers', methods=['POST'])
 def create_offer():
     data = request.get_json()
-    print(data)
-    result = Offer.create_offer(data['quantity'], data['quality'], data['priceUnit'], data['unit'], data['state'], data['actorType'], data['actorRef'] )
+    actorRef = get_jwt_identity()
+    result = Offer.create_offer(data['quantity'], data['quality'], data['priceUnit'], data['unit'], data['state'], data['actorType'], actorRef )
     if result :
         res = jsonify({'Message': 'offer created'})
         res.status_code = 200

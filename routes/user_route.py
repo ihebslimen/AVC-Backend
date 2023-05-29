@@ -51,9 +51,10 @@ def get_one_user(_id):
 @admin_bp.route('/users', methods=['POST'])
 def create_user():
     data = request.get_json()
+    print(data)
     
     if data['role'] == 'admin':
-        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'])
+        result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'])
     else :
         result = User.create_user(data['cin'], data['name'], data['email'], data['phone'], data['role'], data['state'],data['type'], data['actorInfoJson'])
     if result == 'User already signed up':

@@ -8,12 +8,18 @@ from routes.exporter_route import *
 from routes.otp_route import *
 from routes.user_route import * 
 from routes.offer_route import * 
-#from routes.transaction_route import *
-from routes.violation_route import *
+from routes.transaction_route import *
+from routes.smart_contracts_route import *
+
 from db import mongo
 from models.actor import Actor
 import os
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+import config_web3
 
 
 # settings app
@@ -32,6 +38,16 @@ app.config['MONGO_URI'] = MONGO_URI
 mongo.init_app(app)
 app.secret_key = 'mysecretkey'
 app.config['JWT_SECRET_KEY'] = 'secretkey'
+
+#### JWT Configuration
+app.config['JWT_TOKEN_LOCATION'] = "headers"
+app.config['JWT_HEADER_NAME'] = "Authorization"
+app.config["JWT_HEADER_TYPE"] = "Bearer"
+app.config["JWT_IDENTITY_CLAIM"] = "user_id" # user_id is defined by mongodb
+
+
+jwt = JWTManager(app)
+
 # blueprints
 
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
@@ -46,6 +62,7 @@ def hello():
     res.status_code = 200
     return res
 
+
 @app.before_request
 def handle_preflight():
     if request.method == 'OPTIONS':
@@ -58,4 +75,4 @@ def handle_preflight():
 
 # Run Server
 if __name__ == '__main__':
-    app.run(debug=DEBUG)
+    app.run(host="0.0.0.0", debug=DEBUG)

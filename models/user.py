@@ -4,6 +4,7 @@ from db import mongo
 from models.actor import Actor
 
 
+
 class User(Actor):
     def __init__(self,_id, cin, name, email, phone, role, type,state, actor_id):
         self._id

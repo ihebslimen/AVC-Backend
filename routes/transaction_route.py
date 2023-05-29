@@ -25,7 +25,7 @@ for filename in os.listdir(folder_path):
     # Check if the file is a regular file (not a folder or symlink)
     if os.path.isfile(os.path.join(folder_path, filename)):
         # Open the file and read its contents
-        with open(os.path.join(folder_path, filename), 'r') as f:
+        with open(os.path.join(folder_path, filename), 'r', encoding="utf-8") as f: # adding utf-8 encoding for windows users
             contract = f.read()
             contract_json = json.loads(contract)
             contracts[contract_json['contractName']] = {}
