@@ -5,6 +5,11 @@ from models.offer import Offer
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
 from flask_pymongo import PyMongo , ObjectId
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+
 
 import os
 
@@ -51,7 +56,10 @@ def get_one_offer(_id):
 @user_bp.route('/offers', methods=['POST'])
 def create_offer():
     data = request.get_json()
-    actorRef = get_jwt_identity()
+    auth_header = request.headers.get('Authorization')
+    jwt_token = auth_header.split(' ')[1]
+    decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+    actorRef = decoded_token['user_id']
     result = Offer.create_offer(data['quantity'], data['quality'], data['priceUnit'], data['unit'], data['state'], data['actorType'], actorRef )
     if result :
         res = jsonify({'Message': 'offer created'})
