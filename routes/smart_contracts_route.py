@@ -30,7 +30,7 @@ def process_events(tuple_data):
 
 
 Admin = Account('0x406FbC169A5715f67b8E4bCB0eccc1C87c0DF7D4', '0x24e29dcdd56a31663eb242ab319b391322d66a87eb4d674af372268c84f5e0e6')
-Farmer = Account('0x621b2b26c981368Ab2072667E5e1Ae31aD0a17A8', '0x92a7d57a3d476b90cdb422e3d6084c18e3b9b59c5146b9f0f81de4bf05253e5d')
+Farmer = Account('0x1956893257E63DA76C01E7d72482ee6eE2a10f8a', '0x2b26d487fb42f3ce4ddcc730fddfac80883b6c09868d69bd5d8ca0a7124e217c')
 Farmer1 = Account('0xD3A84148B9A8460ee4DaC690f7d9a3cd693c824D', '0x1909eeb493c56ca0ca100bffc2c626729b9aab055a34844092d2a447542d9687')
 
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
@@ -503,7 +503,8 @@ def account_transaction_history():
         res= jsonify({'Error': error_msg})
         res.status_code = 404
         return res
-    if len(history) != 0 :
+    print(history)
+    if len(history) >-1 :
         res = jsonify({'Message': 'Get Account Transactions History Succeeded!!', 'data': history})
         res.status_code = 200
     else:
