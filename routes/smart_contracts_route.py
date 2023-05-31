@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request,url_for
+from flask import Flask, jsonify, request,url_for,session, g
 from models.transaction import Transaction
 import json
 import os
@@ -6,6 +6,9 @@ import requests
 from blueprints.user import user_bp
 from blueprints.admin import admin_bp
 from web3models.Account import *
+import jwt
+
+SECRET_KEY = 'secretkey'
 
 
 def serialize_function(obj):
@@ -28,10 +31,6 @@ def process_events(tuple_data):
     print(serialized_data)
     history.append(serialized_data)
 
-
-Admin = Account('0x406FbC169A5715f67b8E4bCB0eccc1C87c0DF7D4', '0x24e29dcdd56a31663eb242ab319b391322d66a87eb4d674af372268c84f5e0e6')
-Farmer = Account('0x1956893257E63DA76C01E7d72482ee6eE2a10f8a', '0x2b26d487fb42f3ce4ddcc730fddfac80883b6c09868d69bd5d8ca0a7124e217c')
-Farmer1 = Account('0xD3A84148B9A8460ee4DaC690f7d9a3cd693c824D', '0x1909eeb493c56ca0ca100bffc2c626729b9aab055a34844092d2a447542d9687')
 
 map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
 
@@ -57,6 +56,7 @@ def actor_type():
 
 @admin_bp.route('/blockchain/actor_type', methods=['POST'])
 def actor_type():
+
     data = request.get_json()
     for  key, val  in map_actor_type.items():
         try:
@@ -79,9 +79,10 @@ def actor_type():
 
 @admin_bp.route('/blockchain/add_farmer', methods=['POST'])
 def add_farmer():
+
     try:
         data = request.get_json()
-        result = Admin.setUserType( data['pub_key'], 2)
+        result = g.account_loggedIn.setUserType( data['pub_key'], 2)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -97,9 +98,10 @@ def add_farmer():
 
 @admin_bp.route('/blockchain/add_transformer', methods=['POST'])
 def add_transformer():
+
     try:
         data = request.get_json()
-        result = Admin.setUserType( data['pub_key'], 3)
+        result = g.account_loggedIn.setUserType( data['pub_key'], 3)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -115,9 +117,10 @@ def add_transformer():
 
 @admin_bp.route('/blockchain/add_admin', methods=['POST'])
 def add_admin():
+
     try:
         data = request.get_json()
-        result = Admin.setUserType( data['pub_key'], 1)
+        result = g.account_loggedIn.setUserType( data['pub_key'], 1)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -133,9 +136,10 @@ def add_admin():
 
 @admin_bp.route('/blockchain/remove_actor', methods=['POST'])
 def remove_actor():
+
     try:
         data = request.get_json()
-        result = Admin.setUserType( data['pub_key'], 0)
+        result = g.account_loggedIn.setUserType( data['pub_key'], 0)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -151,6 +155,7 @@ def remove_actor():
 
 @admin_bp.route('/blockchain/delete_account', methods=['POST'])
 def delete_account():
+
     try:
         data = request.get_json()
         for key, val in map_actor_type.items():
@@ -158,7 +163,7 @@ def delete_account():
             if result:
                 break
         print(val)
-        result1 = Admin.delUserType( data['pub_key'], val)
+        result1 = g.account_loggedIn.delUserType( data['pub_key'], val)
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -174,9 +179,15 @@ def delete_account():
 
 @user_bp.route('/blockchain/create_product', methods=['POST'])
 def create_product():
+
     data = request.get_json()
+    objects = dir(g)
+    print(' '.join(objects))
+
+
     try:
-        result = Farmer.createProduct( data['product_id'],data['product_quantity'],data['product_quality'])
+        print(g.account_loggedIn.pub_key)
+        result = g.account_loggedIn.createProduct( data['product_id'],data['product_quantity'],data['product_quality'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -192,9 +203,10 @@ def create_product():
 
 @user_bp.route('/blockchain/delete_product', methods=['POST'])
 def delete_product():
+
     data = request.get_json()
     try:
-        result = Farmer.deleteProduct( data['product_id'])
+        result = g.account_loggedIn.deleteProduct( data['product_id'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -211,9 +223,10 @@ def delete_product():
 
 @user_bp.route('/blockchain/update_product', methods=['POST'])
 def update_product():
+
     data = request.get_json()
     try:
-        result = Farmer.updateProduct( data['product_id'],data['product_quantity'],data['product_quality'])
+        result = g.account_loggedIn.updateProduct( data['product_id'],data['product_quantity'],data['product_quality'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -229,6 +242,7 @@ def update_product():
 
 @user_bp.route('/blockchain/check_owner_product', methods=['POST'])
 def get_product_owner():
+
     data = request.get_json()
     try:
         result = ProductContract.functions.isProductOwner( data['pub_key'],data['product_id']).call()
@@ -248,6 +262,7 @@ def get_product_owner():
 
 @admin_bp.route('/blockchain/check_owner_product', methods=['POST'])
 def get_product_owner():
+
     data = request.get_json()
     try:
         result = ProductContract.functions.isProductOwner( data['pub_key'],data['product_id']).call()
@@ -270,7 +285,7 @@ def get_product_owner():
 def get_products():
     data = request.get_json()
     try:
-        result_tx = Farmer.getProductsByAddress(data['pub_key'])
+        result_tx = g.account_loggedIn.getProductsByAddress(data['pub_key'])
         products = ProductContract.functions.getProductsByAddress(data['pub_key']).call()
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
@@ -291,7 +306,7 @@ def get_products():
 def create_offer_blockchain():
     data = request.get_json()
     try:
-        result = Farmer.createOffer( data['offer_id'], data['product_id'],data['product_quantity'],data['price'])
+        result = g.account_loggedIn.createOffer( data['offer_id'], data['product_id'],data['product_quantity'],data['price'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -330,7 +345,7 @@ def get_offer_owner():
 def buy_offer_blockchain():
     data = request.get_json()
     try:
-        result = Farmer1.buyOffer( data['offer_id'])
+        result = g.account_loggedIn.buyOffer( data['offer_id'])
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
         res= jsonify({'Error': error_msg})
@@ -350,7 +365,7 @@ def buy_offer_blockchain():
 def get_offers():
     data = request.get_json()
     try:
-        result_tx = Farmer.getOfferByOwner(data['pub_key'])
+        result_tx = g.account_loggedIn.getOfferByOwner(data['pub_key'])
         offers = OfferContract.functions.getOfferByOwner(data['pub_key']).call()
     except Exception as e:
         error_msg = str(e).split("revert")[-1].strip()
@@ -447,8 +462,16 @@ def transaction_history():
     return res
 
 
-@user_bp.route('/blockchain/transaction_history', methods=['POST'])
+@user_bp.route('/blockchain/account_transaction_history', methods=['POST'])
 def account_transaction_history():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        res = jsonify({"Error" : " Authorization Header Missing"})
+        res.status_code = 401
+        abort(res)
+    jwt_token = auth_header.split(' ')[1]
+    decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+    pub_key = decoded_token['public_key']
     data = request.get_json()
     history = []
     try:
@@ -470,7 +493,7 @@ def account_transaction_history():
         for log in event_filter_product.get_all_entries():
             txh = log.get("transactionHash")
             transaction = web3.eth.get_transaction(txh)
-            if transaction['from'] == Farmer.pub_key:
+            if transaction['from'] == pub_key:
                 tuple_data = ProductContract.decode_function_input(transaction.input)
                 function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
                 arguments = tuple_data[1]
@@ -481,7 +504,7 @@ def account_transaction_history():
 
             txh = log.get("transactionHash")
             transaction = web3.eth.get_transaction(txh)
-            if transaction['from'] == Farmer.pub_key:
+            if transaction['from'] == pub_key:
                 tuple_data = OfferContract.decode_function_input(transaction.input)
                 function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
                 arguments = tuple_data[1]
@@ -491,7 +514,7 @@ def account_transaction_history():
         for log in event_filter_actor.get_all_entries():
             txh = log.get("transactionHash")
             transaction = web3.eth.get_transaction(txh)
-            if transaction['from'] == data['pub_key']:
+            if transaction['from'] == pub_key:
                 tuple_data = AccessControlContract.decode_function_input(transaction.input)
                 function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
                 arguments = tuple_data[1]

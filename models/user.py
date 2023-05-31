@@ -38,6 +38,12 @@ class User(Actor):
             result = {'_id': str(user['_id']),'cin': str(user['cin']), 'name': user['name'], 'email': user['email'], 'phone': user['phone'], 'role': str(user['role']),'public_key' : user['public_key'],'private_key' : user['private_key']}
 
         return result
+
+
+    @staticmethod
+    def login(_id):
+        user = mongo.db.users.find_one({'_id': ObjectId(_id)})
+        return user
         
     @staticmethod
     def filter_users(query):
@@ -53,7 +59,7 @@ class User(Actor):
 
         return result
     @staticmethod
-    def create_user(cin, name, email, phone, role, state, type ='', actorInfoJson = ''):
+    def create_user(cin, name, email, phone, role, state = '', type ='', actorInfoJson = ''):
         filter_result = User.filter_users({'cin':cin})
         if filter_result:
             return "User already signed up"

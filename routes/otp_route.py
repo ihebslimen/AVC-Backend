@@ -1,5 +1,5 @@
 # Download the helper library from https://www.twilio.com/docs/python/install
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session,g
 from twilio.rest import Client
 from random import randint
 import os
@@ -14,6 +14,7 @@ from blueprints.admin import admin_bp
 from blueprints.shared import shared_bp
 from models.otp import OTP
 from models.user import User
+from web3models.Account import Account
 
 
 
@@ -78,27 +79,29 @@ def login():
 def login_verification():
     # Verify OTP
     data = request.get_json()
-    res = User.get_one_user(data['_id'])
+    res = User.login(data['_id'])
     user_id =data['_id']
     verified_number = res['phone']
     role = res['role']
     public_key = res['public_key']
-    
+    private_key = res['private_key']
 
     result = OTP.verifyOTP(verified_number,data['otp_code'])
-
+    print(result)
     if result != 'approved':
         res = jsonify({"Error" : result})
         res.status_code = 404
         return res
-    
+    print("###### Creating account logged in")
+    g.account_loggedIn = Account(private_key,private_key)
+    print("######## account logged in created ",g.account_loggedIn)
     # Create access token (e.g. using JWT)
     if(role == 'admin'):
-        payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
+        payload = {'user_id': user_id, 'role' : role, 'public_key' : public_key ,'private_key' : private_key ,  'exp': datetime.datetime(9999, 12, 31)}
     
     elif(role == 'user'):
         actorType = res['type']
-        payload = {'user_id': user_id, 'role' : role,'type':actorType ,'public_key' : public_key ,  'exp': datetime.datetime(9999, 12, 31)}
+        payload = {'user_id': user_id, 'role' : role,'type':actorType ,'public_key' : public_key , 'private_key' : private_key, 'exp': datetime.datetime(9999, 12, 31)}
 
     
     access_token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')

@@ -5,9 +5,25 @@ from eth_keys import keys
 from cryptography.fernet import Fernet
 import os
 import json
+import fileinput
+
+
+
+file_path = 'keypairs.txt'  # Replace 'file.txt' with the actual file path
+
+next_account = None
+
+with open(file_path, 'r') as file:
+    for line in file:
+        pair = line.strip().split(',')
+        next_account =  pair
+        break
+
+
+
 
 class Actor:
-    nbInstances = 0
+
 
     def __init__(self):
         self.public_key = None
@@ -23,20 +39,16 @@ class Actor:
         return
 
     def generate_key_pair():
-        # Generate a new private key
-        private_key = keys.PrivateKey(os.urandom(32)) 
-        # Derive the public key from the private key
-        public_key = private_key.public_key
-        """ # Encrypt the private key and save it securely to a file
-        key = Fernet.generate_key()
-        cipher_suite = Fernet(key)
-        cipher_text = cipher_suite.encrypt(private_key.to_bytes())
-        with open('private_key.txt', 'wb') as f:
-            f.write(cipher_text)
-        # Erase any trace of the private key from the program
-        del private_key 
-         """
-        return { 'public_key' : str(public_key) , 'private_key' : str(private_key)}
+
+                # Delete the first line of the file
+        with fileinput.input(file_path, inplace=True) as file:
+            first_line = True
+            for line in file:
+                if not first_line:
+                    print(line, end='')
+                first_line = False
+        return { 'public_key' : str(next_account[1]) , 'private_key' : str(next_account[0])}
+
 
     
     def sendTransaction(self):

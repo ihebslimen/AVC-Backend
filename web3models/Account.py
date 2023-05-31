@@ -4,6 +4,14 @@ from flask import Flask, jsonify, request
 from config_web3 import web3
 from config_web3 import contracts
 import os
+file_path = 'keypairs.txt'  # Replace 'file.txt' with the actual file path
+
+available_accounts = []  # Array to store the pairs
+
+with open(file_path, 'r') as file:
+    for line in file:
+        pair = line.strip().split(',')
+        available_accounts.append(pair)
 
 
 contract_address_access = contracts["AccessControl"]["address"]
@@ -18,6 +26,11 @@ contract_abi_offer = contracts["Offer"]["abi"]
 OfferContract =web3.eth.contract(address=contract_address_offer, abi=contract_abi_offer)
 
 class Account:
+
+    affected_accounts = 3
+
+    map_actor_type = {'notype' : 0,"admin": 1, "farmer": 2, "transformer":3}
+
     def __init__(self, pub_key , priv_key) -> None:
         self.pub_key = pub_key
         self.priv_key = priv_key
