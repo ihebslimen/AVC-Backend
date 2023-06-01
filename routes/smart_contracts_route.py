@@ -462,7 +462,7 @@ def transaction_history():
     return res
 
 
-@user_bp.route('/blockchain/account_transaction_history', methods=['POST'])
+@user_bp.route('/blockchain/account_transaction_history', methods=['GET'])
 def account_transaction_history():
     auth_header = request.headers.get('Authorization')
     if not auth_header:
@@ -472,7 +472,7 @@ def account_transaction_history():
     jwt_token = auth_header.split(' ')[1]
     decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
     pub_key = decoded_token['public_key']
-    data = request.get_json()
+
     history = []
     try:
 
