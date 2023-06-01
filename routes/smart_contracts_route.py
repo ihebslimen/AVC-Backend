@@ -453,7 +453,7 @@ def transaction_history():
         res= jsonify({'Error': error_msg})
         res.status_code = 404
         return res
-    if len(history) != 0 :
+    if len(history) > -1 :
         res = jsonify({'Message': 'Get Transactions History Succeeded!!', 'data': history})
         res.status_code = 200
     else:
