@@ -27,11 +27,15 @@ class Offer(Actor):
         
     @staticmethod
     def filter_offers(query):
+        offers = mongo.db.offer.find({})
         if '_id' in query:
             query['_id'] = ObjectId(query['value'])
+        print(query)
         offers = mongo.db.offer.find(query)
+        
         result = []
         for offer in offers:
+            print(offer)
             result.append({'_id': str(offer['_id']), 'quantity': offer['quantity'], 'quality' : offer['quality'], 'priceUnit' : offer['priceUnit'], 'unit' : offer['unit'], 'state' : offer['state'],'actorType' : offer['actorType'], 'actorRef' : str(offer['actorRef'])})
         return result
 
