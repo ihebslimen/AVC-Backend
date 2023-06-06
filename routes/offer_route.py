@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request, abort
 import jwt
 from models.offer import Offer
+from models.achat import Achat
 from blueprints.admin import admin_bp
 from blueprints.user import user_bp
 from flask_pymongo import PyMongo , ObjectId
@@ -102,7 +103,9 @@ def buy_offer():
         decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
         user_id = decoded_token['user_id']
         actorType = decoded_token['type']
+        offer = Offer.get_one_offer(data['_id'])
         result = Offer.update_offer(offer['_id'], {'actorRef': user_id, "actorType": actorType})
+        result1 = Achat.create_achat(user_id, offer['actorRef'], offer['quantity'], offer['quality'], offer['priceUnit'])
         if result :
             res = jsonify({'Message': 'offer Bought'})
             res.status_code = 200

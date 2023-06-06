@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request,url_for,session, g
 from models.transaction import Transaction
+from models.achat import Achat
 import json
 import os
 import requests
@@ -16,6 +17,22 @@ def serialize_function(obj):
         return str(obj)
     raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
 
+
+def mappingTX(tuple_data):
+    function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
+    arguments = tuple_data[1]
+    if function_name == "createProduct":
+        return {"tache": "Creation Produit" , "product_id" : arguments['_prod_id'], "product_quality" : arguments['_prod_qlt'], "product_quantity" : arguments['_prod_qty']}
+    if function_name == "updateProduct":
+        return {"tache": "Mise a Jour Produit" , "product_id" : arguments['_prod_id'], "product_quality" : arguments['_prod_qlt'], "product_quantity" : arguments['_prod_qty']}
+    if function_name == "deleteProduct":
+            return {"tache": "Supprimer Produit" , "product_id" : arguments['_prod_id'], "product_quality" : arguments['_prod_qlt'], "product_quantity" : arguments['_prod_qty']}
+    if function_name == "createOffer":
+            return {"tache": "Creation Offre" , "offer_id" : arguments['_offer_id'],"product_id" : arguments['_prod_id'], "product_quantity" : arguments['_prod_qty'], "prix_unity" : arguments['_price']}
+    if function_name == "buyOffer":
+            return {"tache": "Acheter Offre" , "offer_id" : arguments['_offer_id']}
+    if function_name == "listAllOffers":
+            return {"tache": "Lister Offres" }
 
 def process_events(tuple_data):
     serialized_data = str(tuple_data[0])
@@ -493,12 +510,23 @@ def account_transaction_history():
         for log in event_filter_product.get_all_entries():
             txh = log.get("transactionHash")
             transaction = web3.eth.get_transaction(txh)
+            
             if transaction['from'] == pub_key:
+                block = web3.eth.get_block(transaction['blockNumber'])
+                timestamp = block['timestamp']
                 tuple_data = ProductContract.decode_function_input(transaction.input)
                 function_name = str(tuple_data[0]).split('Function')[-1].strip().split('(')[0].strip()
                 arguments = tuple_data[1]
-                serialized_data = {'function': function_name, 'args': arguments }
-                history.append(serialized_data)
+                mapped_data = mappingTX(tuple_data)
+                mapped_data['timestamp'] = timestamp
+                print(mapped_data)
+
+
+                #serialized_data = {'function': function_name, 'args': arguments, "timestamp": timestamp}
+                
+                
+                
+                history.append(mapped_data)
 
         for log in event_filter_offer.get_all_entries():
 
@@ -534,3 +562,22 @@ def account_transaction_history():
         res = jsonify({'Error': 'Get Account Transactions History Failed!!'})
         res.status_code = 404
     return res
+
+
+
+@user_bp.route('/historique_achats', methods=['GET'])
+def get_achat():
+
+    auth_header = request.headers.get('Authorization')
+    if auth_header :
+        jwt_token = auth_header.split(' ')[1]
+        decoded_token = jwt.decode(jwt_token, SECRET_KEY, algorithms=['HS256'])
+        achats = Achat.get_all_achats(decoded_token['user_id'])
+
+        if achats :
+            res = jsonify({"Message" : 'Get request succeeded' ,'data': achats})
+            res.status_code = 200
+        else:
+            res = jsonify({'Error': 'Unable to get Historique Achats'})
+            res.status_code = 404
+        return res
