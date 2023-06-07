@@ -104,9 +104,15 @@ def buy_offer():
         user_id = decoded_token['user_id']
         actorType = decoded_token['type']
         offer = Offer.get_one_offer(data['_id'])
+        if offer["actorRef"] == user_id:
+            res = jsonify({'Error': 'Actor Cannot Buy His Offer!!!'})
+            res.status_code = 401
+            return res
+
         result = Offer.update_offer(offer['_id'], {'actorRef': user_id, "actorType": actorType})
+        
         result1 = Achat.create_achat(user_id, offer['actorRef'], offer['quantity'], offer['quality'], offer['priceUnit'])
-        if result :
+        if result and result1:
             res = jsonify({'Message': 'offer Bought'})
             res.status_code = 200
         else:
